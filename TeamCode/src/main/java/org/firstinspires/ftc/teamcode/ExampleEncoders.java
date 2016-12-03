@@ -55,7 +55,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="ExampleEncoders", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled
-// this is a comment
 public class ExampleEncoders extends OpMode
 {
     /* Declare OpMode members. */

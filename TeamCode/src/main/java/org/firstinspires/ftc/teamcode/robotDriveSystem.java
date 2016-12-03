@@ -34,8 +34,11 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DcMotorController;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -62,13 +65,17 @@ public class robotDriveSystem extends OpMode
 
      private DcMotor leftMotor = null;
      private DcMotor rightMotor = null;
+     private DcMotor catapultMotor = null;
+
+    final static int ENCODER_CPR = 1120;    //Encoder counts per Revolution
+
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
     public void init() {
-        telemetry.addData("Status", "Initialized");
+        //telemetry.addData("Status", "Initialized");
 
         /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
@@ -76,12 +83,16 @@ public class robotDriveSystem extends OpMode
          */
          leftMotor  = hardwareMap.dcMotor.get("left_drive");
          rightMotor = hardwareMap.dcMotor.get("right_drive");
+         catapultMotor = hardwareMap.dcMotor.get("cat");
 
         // eg: Set the drive motor directions:
         // Reverse the motor that runs backwards when connected directly to the battery
         // leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
           rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-        // telemetry.addData("Status", "Initialized");
+          catapultMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+          catapultMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+          telemetry.addData("Status", "Initialized");
     }
 
     /*
@@ -96,7 +107,12 @@ public class robotDriveSystem extends OpMode
      */
     @Override
     public void start() {
+
         runtime.reset();
+
+        catapultMotor.setTargetPosition((int) COUNTS);
+        catapultMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        catapultMotor.setPower(0.5);
     }
 // comment
     /*
