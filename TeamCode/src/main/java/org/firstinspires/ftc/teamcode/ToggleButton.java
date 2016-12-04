@@ -32,12 +32,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 
 /**
@@ -52,22 +51,18 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
  *
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- *
- * Updated 12/2/2016
  */
 
-@TeleOp(name="RobotDriveSystem", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="ToggleButton", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled
-public class robotDriveSystem extends OpMode
+public class ToggleButton extends OpMode
 {
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
 
-     private DcMotor leftMotor = null;
-     private DcMotor rightMotor = null;
-     private DcMotor catapultMotor = null;
-
-    final static int ENCODER_CPR = 1120;    //Encoder counts per Revolution
+    //private DcMotor leftMotor = null;
+    private DcMotor rightMotor = null;
+    private DcMotor intake = null;
 
 
     /*
@@ -81,18 +76,15 @@ public class robotDriveSystem extends OpMode
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
          */
-         leftMotor  = hardwareMap.dcMotor.get("left_drive");
-         rightMotor = hardwareMap.dcMotor.get("right_drive");
-         catapultMotor = hardwareMap.dcMotor.get("cat");
+        //leftMotor  = hardwareMap.dcMotor.get("left_drive");
+        //rightMotor = hardwareMap.dcMotor.get("right_drive");
+        intake = hardwareMap.dcMotor.get("left_drive");
 
         // eg: Set the drive motor directions:
         // Reverse the motor that runs backwards when connected directly to the battery
-        // leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-          rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-          catapultMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-          catapultMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-          telemetry.addData("Status", "Initialized");
+        //leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
+        //rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        telemetry.addData("Status", "Initialized");
     }
 
     /*
@@ -107,28 +99,30 @@ public class robotDriveSystem extends OpMode
      */
     @Override
     public void start() {
-
         runtime.reset();
-
-        //catapultMotor.setTargetPosition((int) COUNTS);
-        catapultMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        catapultMotor.setPower(0.5);
     }
-// comment
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
+    //outside loop
+    private boolean intakeOn = false;
     @Override
     public void loop() {
         telemetry.addData("Status", "Running: " + runtime.toString());
-        float leftY = -gamepad1.left_stick_y;
-        float rightY = -gamepad1.right_stick_y;
-        telemetry.addData("Left Gamepad",leftY);
-        telemetry.addData("Right Gamepad",rightY);
+
         // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
-         leftMotor.setPower(leftY);
-         rightMotor.setPower(rightY);
-}
+        //leftMotor.setPower(-gamepad1.left_stick_y);
+        //rightMotor.setPower(gamepad1.left_stick_x);
+        if(gamepad1.a) {
+            intakeOn = !intakeOn;
+        }
+        if(intakeOn){
+            intake.setPower(1.0);
+        }
+        else{
+            intake.setPower(0.0);
+        }
+    }
 
     /*
      * Code to run ONCE after the driver hits STOP
