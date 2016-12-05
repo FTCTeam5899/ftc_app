@@ -68,7 +68,8 @@ public class robotControlSystem extends OpMode
      private DcMotor catapultMotor = null;
 
     final static int ENCODER_CPR = 1120;    //Encoder counts per Revolution
-
+    int degrees = 70; //sets the degrees we want the motor to turn
+    double counts = (double) degrees * ENCODER_CPR/360.0; //sets the amount of counts for the motor to turn to tun the spesified derees
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -110,7 +111,7 @@ public class robotControlSystem extends OpMode
 
         runtime.reset();
 
-        //catapultMotor.setTargetPosition((int) COUNTS);
+        catapultMotor.setTargetPosition((int) counts);
         catapultMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         catapultMotor.setPower(0.5);
     }
@@ -125,6 +126,9 @@ public class robotControlSystem extends OpMode
         float rightY = -gamepad1.right_stick_y;
         telemetry.addData("Left Gamepad",leftY);
         telemetry.addData("Right Gamepad",rightY);
+        //catapult
+        telemetry.addData("Motor Target", counts);
+        telemetry.addData("Left Position", catapultMotor.getCurrentPosition());
         // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
          leftMotor.setPower(leftY);
          rightMotor.setPower(rightY);
