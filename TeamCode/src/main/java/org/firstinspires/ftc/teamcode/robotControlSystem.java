@@ -90,6 +90,7 @@ public class robotControlSystem extends OpMode
         // Reverse the motor that runs backwards when connected directly to the battery
         // leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
           rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+          catapultMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
           catapultMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
           catapultMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
