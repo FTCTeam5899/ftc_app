@@ -66,10 +66,14 @@ public class robotControlSystem extends OpMode
      private DcMotor leftMotor = null;
      private DcMotor rightMotor = null;
      private DcMotor catapultMotor = null;
+     private DcMotor intake = null;
 
     final static int ENCODER_CPR = 1120;    //Encoder counts per Revolution
-    int degrees = 70; //sets the degrees we want the motor to turn
+    int degrees = 10; //sets the degrees we want the motor to turn
     double counts = (double) degrees * ENCODER_CPR/360.0; //sets the amount of counts for the motor to turn to tun the spesified derees
+
+    //variables for intake
+    double iPwr = 1; //power for intake
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -85,6 +89,7 @@ public class robotControlSystem extends OpMode
          leftMotor  = hardwareMap.dcMotor.get("left_drive");
          rightMotor = hardwareMap.dcMotor.get("right_drive");
          catapultMotor = hardwareMap.dcMotor.get("cat");
+         intake = hardwareMap.dcMotor.get("intake");
 
         // eg: Set the drive motor directions:
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -112,9 +117,9 @@ public class robotControlSystem extends OpMode
 
         runtime.reset();
 
-        catapultMotor.setTargetPosition((int) counts);
+        /*catapultMotor.setTargetPosition((int) counts);
         catapultMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        catapultMotor.setPower(0.5);
+        catapultMotor.setPower(1);*/
     }
 // comment
     /*
@@ -123,16 +128,45 @@ public class robotControlSystem extends OpMode
     @Override
     public void loop() {
         telemetry.addData("Status", "Running: " + runtime.toString());
-        float leftY = -gamepad1.left_stick_y;
-        float rightY = -gamepad1.right_stick_y;
+        //left and right drive motors
+        float leftY = -gamepad1.left_stick_y; //power for left_motor attached to left controller stick
+        float rightY = -gamepad1.right_stick_y; //poewr for right_motor attached to right controller stick
         telemetry.addData("Left Gamepad",leftY);
         telemetry.addData("Right Gamepad",rightY);
+        //intake
+        boolean buttonA = gamepad1.a;
+        boolean buttonB = gamepad1.b;
         //catapult
-        telemetry.addData("Motor Target", counts);
-        telemetry.addData("Left Position", catapultMotor.getCurrentPosition());
+        boolean trigger1 = gamepad1.left_bumper;
+        boolean trigger2 = gamepad1.right_bumper;
+        boolean buttonY = gamepad1.y;
         // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
          leftMotor.setPower(leftY);
          rightMotor.setPower(rightY);
+        //Run the intake
+        if(buttonA){
+            intake.setPower(iPwr);
+        }
+        if(buttonB){
+            intake.setPower(-iPwr);
+        }
+        //Run the catapult
+        if(trigger1){
+            int cnt = 0;
+            while(buttonY) {
+                catapultMotor.setTargetPosition((int) counts);
+                catapultMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                catapultMotor.setPower(1);
+            }
+            counts*= cnt;
+        }
+        if(trigger2){
+            catapultMotor.setTargetPosition((int) counts);
+            catapultMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            catapultMotor.setPower(1);
+        }
+        telemetry.addData("Motor Target", counts);
+        telemetry.addData(/*Left*/"Position", catapultMotor.getCurrentPosition());
 }
 
     /*
