@@ -125,6 +125,8 @@ public class robotControlSystem extends OpMode
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
+    boolean AButonOn = false;
+    boolean BButonOn = false;
     @Override
     public void loop() {
         telemetry.addData("Status", "Running: " + runtime.toString());
@@ -145,10 +147,22 @@ public class robotControlSystem extends OpMode
          rightMotor.setPower(rightY);
         //Run the intake
         if(buttonA){
-            intake.setPower(iPwr);
+            if(AButonOn){
+                intake.setPower(0);
+            }
+           else{
+                intake.setPower(iPwr);
+                AButonOn = true;
+            }
         }
         if(buttonB){
-            intake.setPower(-iPwr);
+            if(BButonOn){
+                intake.setPower(0);
+            }
+            else {
+                intake.setPower(-iPwr);
+                BButonOn = true;
+            }
         }
         //Run the catapult
         if(trigger1){
