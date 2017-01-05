@@ -79,12 +79,12 @@ public class robotControlSystem extends OpMode
 
 
     //functions for The Dominator (Robot 2)
-    public void leftMotors(int pow){
+    public void leftMotors(float pow){
         leftMotor2.setPower(pow);
         leftMotor.setPower(pow);
     }
 
-    public void  rightMotors(int pow){
+    public void  rightMotors(float pow){
         rightMotor2.setPower(pow);
         rightMotor.setPower(pow);
     }
