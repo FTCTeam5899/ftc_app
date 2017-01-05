@@ -101,9 +101,9 @@ public class robotControlSystem extends OpMode
          * step (using the FTC Robot Controller app on the phone).
          */
          leftMotor  = hardwareMap.dcMotor.get("left_drive");
-         leftMotor2 = hardwareMap.dcMotor.get("left_drive2")
+         leftMotor2 = hardwareMap.dcMotor.get("left_drive2");
          rightMotor = hardwareMap.dcMotor.get("right_drive");
-         rightMotor2 = hardwareMap.dcMotor.get("right_drive2")
+         rightMotor2 = hardwareMap.dcMotor.get("right_drive2");
          catapultMotor = hardwareMap.dcMotor.get("cat");
          intake = hardwareMap.dcMotor.get("intake");
 
