@@ -57,7 +57,7 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
  */
 
 @TeleOp(name="RobotControlSystem", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
-//@Disabled
+@Disabled
 public class robotControlSystem extends OpMode
 {
     /* Declare OpMode members. */
@@ -80,13 +80,13 @@ public class robotControlSystem extends OpMode
 
     //functions for The Dominator (Robot 2)
     public void leftMotors(float pow){
-        leftMotor2.setPower(pow);
-        leftMotor.setPower(pow);
+        leftMotor2.setPower(-pow);
+        leftMotor.setPower(-pow);
     }
 
     public void  rightMotors(float pow){
-        rightMotor2.setPower(pow);
-        rightMotor.setPower(pow);
+        rightMotor2.setPower(-pow);
+        rightMotor.setPower(-pow);
     }
 
     /*
@@ -104,15 +104,15 @@ public class robotControlSystem extends OpMode
          leftMotor2 = hardwareMap.dcMotor.get("left_drive2");
          rightMotor = hardwareMap.dcMotor.get("right_drive");
          rightMotor2 = hardwareMap.dcMotor.get("right_drive2");
-         catapultMotor = hardwareMap.dcMotor.get("cat");
-         intake = hardwareMap.dcMotor.get("intake");
+         //catapultMotor = hardwareMap.dcMotor.get("cat");
+         //intake = hardwareMap.dcMotor.get("intake");
 
         // eg: Set the drive motor directions:
         // Reverse the motor that runs backwards when connected directly to the battery
         // leftMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
           rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
           rightMotor2.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-          catapultMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+          //catapultMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
           /*catapultMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
           catapultMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 */
@@ -164,11 +164,12 @@ public class robotControlSystem extends OpMode
         boolean right = gamepad1.dpad_right;
         float triggerR = gamepad1.right_trigger;
         // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
-         //leftMotor.setPower(leftY); got rid of origional code to replace it with code that
-         //rightMotor.setPower(rightY); works with the dominator(robot 2)
-        leftMotors(leftY);
-        rightMotors(rightY);
+         leftMotor.setPower(leftY);   //got rid of original code to replace it with code that
+         rightMotor.setPower(rightY); //works with the Dominater(robot 2)
+        //leftMotors(leftY);
+        //rightMotors(rightY);
         //Run the intake
+
         if(up){
             intake.setPower(iPwr);
             /*if(AButonOn){
@@ -178,6 +179,7 @@ public class robotControlSystem extends OpMode
                 intake.setPower(iPwr);
                 AButonOn = true;
             }*/
+
         }
         if(right){
             intake.setPower(0);
@@ -202,6 +204,7 @@ public class robotControlSystem extends OpMode
             catapultMotor.setPower(0);
         }*/
 
+
         //catapultMotor.setPower(triggerR);
         if(buttonA){
             catapultMotor.setPower(.5);
@@ -212,6 +215,7 @@ public class robotControlSystem extends OpMode
         if(bumper2){
             catapultMotor.setPower(1);
         }
+
         //telemetry.addData("Motor Target", counts);
         //telemetry.addData(/*Left*/"Position", catapultMotor.getCurrentPosition());
 }
