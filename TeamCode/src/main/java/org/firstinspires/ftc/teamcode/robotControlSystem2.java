@@ -33,7 +33,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Updated 12/2/2016
  */
 
-@TeleOp(name="RobotControlSystem", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="RobotControlSystem2", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
 //@Disabled
 public class robotControlSystem2 extends OpMode
 {
@@ -82,7 +82,7 @@ public class robotControlSystem2 extends OpMode
         leftMotor2 = hardwareMap.dcMotor.get("left_drive2");
         rightMotor = hardwareMap.dcMotor.get("right_drive");
         rightMotor2 = hardwareMap.dcMotor.get("right_drive2");
-        capBallLift = hardwareMap.dcMotor.get("capLift")
+        capBallLift = hardwareMap.dcMotor.get("capLift");
         //catapultMotor = hardwareMap.dcMotor.get("cat");
         //intake = hardwareMap.dcMotor.get("intake");
 
