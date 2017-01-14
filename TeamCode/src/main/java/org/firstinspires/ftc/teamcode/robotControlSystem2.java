@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -44,37 +45,29 @@ public class robotControlSystem2 extends OpMode
     private DcMotor leftMotor2 = null;
     private DcMotor rightMotor = null;
     private DcMotor rightMotor2 = null;
-    private DcMotor catapultMotor = null;
-    private DcMotor intake = null;
     private DcMotor capBallLift = null;
+    private Servo rServo = null;
 
     final static int ENCODER_CPR = 1120;    //Encoder counts per Revolution
     int degrees = 180; //sets the degrees we want the motor to turn
     double counts = (double) degrees * ENCODER_CPR/360.0; //sets the amount of counts for the motor to turn to tun the spesified derees
 
-    //variables for intake
-    double iPwr = 1; //power for intake
-
-
     //functions for The Dominator (Robot 2)
     public void leftMotors(float pow){
-        leftMotor2.setPower(-pow);
         leftMotor.setPower(-pow);
+        leftMotor2.setPower(leftMotor.getPower());
     }
 
     public void  rightMotors(float pow){
-        rightMotor2.setPower(-pow);
         rightMotor.setPower(-pow);
+        rightMotor2.setPower(rightMotor.getPower());
     }
 
     /*
      * Code to run ONCE when the driver hits INIT
      */
     @Override
-    public void init() {
-        //telemetry.addData("Status", "Initialized");
-
-        /* eg: Initialize the hardware variables. Note that the strings used here as parameters
+    public void init() {/* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
          */
@@ -83,8 +76,11 @@ public class robotControlSystem2 extends OpMode
         rightMotor = hardwareMap.dcMotor.get("right_drive");
         rightMotor2 = hardwareMap.dcMotor.get("right_drive2");
         capBallLift = hardwareMap.dcMotor.get("capLift");
-        //catapultMotor = hardwareMap.dcMotor.get("cat");
-        //intake = hardwareMap.dcMotor.get("intake");
+        rServo = hardwareMap.servo.get("forkDrop");
+
+        // set the drop servo's postition
+        double position = 1;
+        rServo.setPosition(position);
 
         // eg: Set the drive motor directions:
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -92,9 +88,6 @@ public class robotControlSystem2 extends OpMode
         rightMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         rightMotor2.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
         //catapultMotor.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-          /*catapultMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-          catapultMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-*/
         telemetry.addData("Status", "Initialized");
     }
 
@@ -113,16 +106,12 @@ public class robotControlSystem2 extends OpMode
 
         runtime.reset();
 
-        /*catapultMotor.setTargetPosition((int) counts);
-        catapultMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        catapultMotor.setPower(1);*/
     }
     // comment
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
     boolean AButonOn = false;
-    boolean BButonOn = false;
     @Override
     public void loop() {
         telemetry.addData("Status", "Running: " + runtime.toString());
@@ -133,74 +122,37 @@ public class robotControlSystem2 extends OpMode
         telemetry.addData("Right Gamepad",rightY);
         //capBallLift
         float rightY2 = -gamepad2.right_stick_y;
-        //intake
+        //button to switch the driving direction of the robot
         boolean buttonA = gamepad1.a;
-        boolean buttonB = gamepad1.b;
-        //catapult
-        boolean bumper1 = gamepad1.left_bumper;
-        boolean bumper2 = gamepad1.right_bumper;
-        boolean buttonY = gamepad1.y;
-        boolean up = gamepad1.dpad_up;
-        boolean down = gamepad1.dpad_down;
-        boolean right = gamepad1.dpad_right;
-        float triggerR = gamepad1.right_trigger;
+        if(buttonA){
+            AButonOn = !AButonOn;
+        }
+        //Button for moving the CapBallLift Drop
+        boolean buttonA2 = gamepad2.a;
+        boolean buttonX2 = gamepad2.x;
         // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
         //leftMotor.setPower(leftY); got rid of original code to replace it with code that
         //rightMotor.setPower(rightY); works with the Dominater(robot 2)
-        leftMotors(leftY);
-        rightMotors(rightY);
+        if(AButonOn){
+            //reverse the direction the robot moves
+            leftMotors(-rightY *(float).7);
+            rightMotors(-leftY *(float).7);
+        }
+        else {
+            leftMotors(leftY);
+            rightMotors(rightY);
+        }
         //run the capBallLift
         capBallLift.setPower(rightY2);
-        //Run the intake
-        /*
-        if(up){
-            intake.setPower(iPwr);
-            /*if(AButonOn){
-                intake.setPower(0);
-            }
-           else{
-                intake.setPower(iPwr);
-                AButonOn = true;
-            }*/
-        /*
+        //run the Drop servo
+        //telemetry.addData("Position: ", position);
+        //telemetry.update();
+        if(buttonA2){
+            rServo.setPosition(.3);
         }
-        if(right){
-            intake.setPower(0);
+        if(buttonX2){
+            rServo.setPosition(1);
         }
-        if(down){
-            intake.setPower(-iPwr);
-            /*if(BButonOn){
-                intake.setPower(0);
-            }
-            else {
-                intake.setPower(-iPwr);
-                BButonOn = true;
-            }*/
-        /*}
-        //Run the catapult
-        /*if(up){
-            //catapultMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            catapultMotor.setPower(.2);
-        }
-        if(down){
-            //catapultMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            catapultMotor.setPower(0);
-        }*/
-    /*
-
-        //catapultMotor.setPower(triggerR);
-        if(buttonA){
-            catapultMotor.setPower(.5);
-        }
-        if(bumper1){
-            catapultMotor.setPower(0);
-        }
-        if(bumper2){
-            catapultMotor.setPower(1);
-        }
-         */
-        //telemetry.addData("Motor Target", counts);
-        //telemetry.addData(/*Left*/"Position", catapultMotor.getCurrentPosition());
     }
 
     /*
