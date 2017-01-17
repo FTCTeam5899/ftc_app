@@ -54,7 +54,7 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
  */
 
 @TeleOp(name="ToggleButton", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
-//@Disabled
+@Disabled
 public class ToggleButton extends OpMode
 {
     /* Declare OpMode members. */

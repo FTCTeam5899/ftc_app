@@ -67,7 +67,7 @@ public class robotControlSystem2 extends OpMode
      * Code to run ONCE when the driver hits INIT
      */
     @Override
-    public void init() {/* eg: Initialize the hardware variables. Note that the strings used here as parameters
+    public void init() { /* eg: Initialize the hardware variables. Note that the strings used here as parameters
          * to 'get' must correspond to the names assigned during the robot configuration
          * step (using the FTC Robot Controller app on the phone).
          */
@@ -111,9 +111,11 @@ public class robotControlSystem2 extends OpMode
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
-    boolean AButonOn = false;
+    boolean aButtonOn = false;
     @Override
     public void loop() {
+
+
         telemetry.addData("Status", "Running: " + runtime.toString());
         //left and right drive motors
         float leftY = -gamepad1.left_stick_y; //power for left_motor attached to left controller stick
@@ -125,15 +127,17 @@ public class robotControlSystem2 extends OpMode
         //button to switch the driving direction of the robot
         boolean buttonA = gamepad1.a;
         if(buttonA){
-            AButonOn = !AButonOn;
+            aButtonOn = !aButtonOn;
         }
         //Button for moving the CapBallLift Drop
         boolean buttonA2 = gamepad2.a;
+        boolean buttonB2 = gamepad2.b;
         boolean buttonX2 = gamepad2.x;
+        
         // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
         //leftMotor.setPower(leftY); got rid of original code to replace it with code that
         //rightMotor.setPower(rightY); works with the Dominater(robot 2)
-        if(AButonOn){
+        if(aButtonOn){
             //reverse the direction the robot moves
             leftMotors(-rightY *(float).7);
             rightMotors(-leftY *(float).7);
@@ -143,12 +147,21 @@ public class robotControlSystem2 extends OpMode
             rightMotors(rightY);
         }
         //run the capBallLift
+        if ((rightY2>0.1) || (rightY2<-0.1))
+        {
+            // Make sure that servo is not in the way of the cap ball lifter
+            rServo.setPosition(.5);
+        }
         capBallLift.setPower(rightY2);
+
         //run the Drop servo
         //telemetry.addData("Position: ", position);
         //telemetry.update();
         if(buttonA2){
             rServo.setPosition(.3);
+        }
+        if(buttonB2) {
+            rServo.setPosition(.5);
         }
         if(buttonX2){
             rServo.setPosition(1);
@@ -156,8 +169,8 @@ public class robotControlSystem2 extends OpMode
     }
 
     /*
-     * Code to run ONCE after the driver hits STOP
-     */
+        * Code to run ONCE after the driver hits STOP
+        */
     @Override
     public void stop() {
     }
