@@ -48,6 +48,8 @@ public class robotControlSystem2 extends OpMode
     private DcMotor capBallLift = null;
     private Servo rServo = null;
 
+    private float motorSlowdownFactor = 1;
+
     final static int ENCODER_CPR = 1120;    //Encoder counts per Revolution
     int degrees = 180; //sets the degrees we want the motor to turn
     double counts = (double) degrees * ENCODER_CPR/360.0; //sets the amount of counts for the motor to turn to tun the spesified derees
@@ -115,7 +117,6 @@ public class robotControlSystem2 extends OpMode
     @Override
     public void loop() {
 
-
         telemetry.addData("Status", "Running: " + runtime.toString());
         //left and right drive motors
         float leftY = -gamepad1.left_stick_y; //power for left_motor attached to left controller stick
@@ -124,6 +125,18 @@ public class robotControlSystem2 extends OpMode
         telemetry.addData("Right Gamepad",rightY);
         //capBallLift
         float rightY2 = -gamepad2.right_stick_y;
+
+        //button to slow down the drive motors on the robot
+        //button must be held to be in slowdown mode
+        //when the left bumper is released, the motor power will return to normal
+        boolean leftBumper1 = gamepad1.left_bumper;
+        if (leftBumper1) {
+            motorSlowdownFactor = (float) 0.5;
+        }
+        else {
+            motorSlowdownFactor = (float) 1.0;
+        }
+
         //button to switch the driving direction of the robot
         boolean buttonA = gamepad1.a;
         if(buttonA){
@@ -133,19 +146,20 @@ public class robotControlSystem2 extends OpMode
         boolean buttonA2 = gamepad2.a;
         boolean buttonB2 = gamepad2.b;
         boolean buttonX2 = gamepad2.x;
-        
+
         // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
         //leftMotor.setPower(leftY); got rid of original code to replace it with code that
         //rightMotor.setPower(rightY); works with the Dominater(robot 2)
-        if(aButtonOn){
+        if(!aButtonOn){
             //reverse the direction the robot moves
-            leftMotors(-rightY *(float).7);
-            rightMotors(-leftY *(float).7);
+            leftMotors(-rightY *(float).7 * motorSlowdownFactor);
+            rightMotors(-leftY *(float).7 * motorSlowdownFactor);
         }
         else {
-            leftMotors(leftY);
-            rightMotors(rightY);
+            leftMotors(leftY * motorSlowdownFactor);
+            rightMotors(rightY * motorSlowdownFactor);
         }
+
         //run the capBallLift
         if ((rightY2>0.1) || (rightY2<-0.1))
         {
