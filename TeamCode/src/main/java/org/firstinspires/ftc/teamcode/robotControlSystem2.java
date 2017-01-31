@@ -47,6 +47,7 @@ public class robotControlSystem2 extends OpMode
     private DcMotor rightMotor2 = null;
     private DcMotor capBallLift = null;
     private Servo rServo = null;
+    private Servo pServo = null;
 
     private float motorSlowdownFactor = 1;
 
@@ -79,6 +80,7 @@ public class robotControlSystem2 extends OpMode
         rightMotor2 = hardwareMap.dcMotor.get("right_drive2");
         capBallLift = hardwareMap.dcMotor.get("capLift");
         rServo = hardwareMap.servo.get("forkDrop");
+        pServo = hardwareMap.servo.get("pushServo");
 
         // set the drop servo's postition
         double position = 1;
@@ -113,7 +115,8 @@ public class robotControlSystem2 extends OpMode
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
-    boolean aButtonOn = false;
+
+    boolean reverse = false;
     @Override
     public void loop() {
 
@@ -139,47 +142,59 @@ public class robotControlSystem2 extends OpMode
 
         //button to switch the driving direction of the robot
         boolean buttonA = gamepad1.a;
-        if(buttonA){
-            aButtonOn = !aButtonOn;
+        boolean buttonB = gamepad1.b;
+        if(buttonB){
+            reverse = true;
         }
+        else if(buttonA){;
+            reverse = false;
+        }
+
         //Button for moving the CapBallLift Drop
-        boolean buttonA2 = gamepad2.a;
-        boolean buttonB2 = gamepad2.b;
-        boolean buttonX2 = gamepad2.x;
+        boolean buttonB2 = gamepad2.b;  // drop forks
+        boolean buttonX2 = gamepad2.x;  // hold forks (initial position)
 
         // eg: Run wheels in tank mode (note: The joystick goes negative when pushed forwards)
         //leftMotor.setPower(leftY); got rid of original code to replace it with code that
         //rightMotor.setPower(rightY); works with the Dominater(robot 2)
-        if(!aButtonOn){
+
+        if(reverse){
             //reverse the direction the robot moves
             leftMotors(-rightY *(float).7 * motorSlowdownFactor);
             rightMotors(-leftY *(float).7 * motorSlowdownFactor);
+            telemetry.addData("Direction: ", "Reverse");
+            telemetry.update();
         }
         else {
             leftMotors(leftY * motorSlowdownFactor);
             rightMotors(rightY * motorSlowdownFactor);
+            telemetry.addData("Direction: ", "Forward");
+            telemetry.update();
         }
+
 
         //run the capBallLift
         if ((rightY2>0.1) || (rightY2<-0.1))
         {
             // Make sure that servo is not in the way of the cap ball lifter
-            rServo.setPosition(.5);
+            rServo.setPosition(1);
         }
         capBallLift.setPower(rightY2);
 
         //run the Drop servo
         //telemetry.addData("Position: ", position);
         //telemetry.update();
-        if(buttonA2){
-            rServo.setPosition(.3);
-        }
         if(buttonB2) {
             rServo.setPosition(.5);
         }
         if(buttonX2){
             rServo.setPosition(1);
         }
+        if(gamepad2.a){
+            rServo.setPosition(0);
+        }
+
+        pServo.setPosition(rServo.getPosition());
     }
 
     /*
