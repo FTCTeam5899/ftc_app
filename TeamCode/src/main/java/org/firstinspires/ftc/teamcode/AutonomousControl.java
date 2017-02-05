@@ -4,8 +4,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
@@ -17,7 +20,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 
 @Autonomous(name="AutonomousControl", group="Iterative Opmode")
-@Disabled
+//@Disabled
 public class AutonomousControl extends LinearOpMode{
 
 /* Declare OpMode members. */
@@ -30,13 +33,21 @@ public class AutonomousControl extends LinearOpMode{
     private Servo rServo = null;
     private Servo pServo = null;
 
+    //sensors
+
+    UltrasonicSensor ultra1 = null;
+    UltrasonicSensor ultra2 = null;
+    OpticalDistanceSensor odsSensor;
+    ColorSensor colorSen1;
+    ColorSensor colorSen2;
+
     //change variable according to what you what to run with
-    boolean runWithEncoders = false;
+    boolean runWithEncoders = true;
 
     private ElapsedTime runtime = new ElapsedTime();
 
     static final double     COUNTS_PER_MOTOR_REV    = 1120;    // eg:  AndyMark Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 40.0;     // This is < 1.0 if geared UP
+    static final double     DRIVE_GEAR_REDUCTION    = 1;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
@@ -70,8 +81,8 @@ public class AutonomousControl extends LinearOpMode{
         pServo = hardwareMap.servo.get("pushServo");
 
         // set the drop servo's postition
-        double position = 1;
-        rServo.setPosition(position);
+        //double position = 1;
+        //rServo.setPosition(position);
 
         // eg: Set the drive motor directions:
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -86,13 +97,15 @@ public class AutonomousControl extends LinearOpMode{
             telemetry.update();
 
             leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            //leftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            //rightMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             idle();
 
             leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             // Send telemetry message to indicate successful Encoder reset
             telemetry.addData("Path0", "Starting at %7d :%7d",
@@ -104,11 +117,18 @@ public class AutonomousControl extends LinearOpMode{
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
-        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-        encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
+        // test programs
+
+        encoderDrive(1, 13, 13, 60);
+        //encTurn(90, .5f);
+
+        //timedTurning(1, .5f);
+
+       // // Step through each leg of the path,
+        //// Note: Reverse movement is obtained by setting a negative distance (not speed)
+        //encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        //encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+        //encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 
         //leftClaw.setPosition(1.0);            // S4: Stop and close the claw.
         //rightClaw.setPosition(0.0);
@@ -120,7 +140,7 @@ public class AutonomousControl extends LinearOpMode{
 
     //My methods:
 
-    public void timedTurnig(int degrees, float pwr){
+    public void timedTurning(int degrees, float pwr){
         //turns the robots
         double secs = 1;
         if(degrees >= 0){
@@ -149,35 +169,6 @@ public class AutonomousControl extends LinearOpMode{
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /*
      *  Method to perfmorm a relative move, based on encoder counts.
      *  Encoders are not reset as the move is based on the current position.
@@ -200,6 +191,8 @@ public class AutonomousControl extends LinearOpMode{
             newLeftTarget = leftMotor.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
             newRightTarget = rightMotor.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
             leftMotor.setTargetPosition(newLeftTarget);
+            leftMotor2.setTargetPosition(newLeftTarget);
+            rightMotor.setTargetPosition(newRightTarget);
             rightMotor.setTargetPosition(newRightTarget);
 
             // Turn On RUN_TO_POSITION
@@ -208,8 +201,8 @@ public class AutonomousControl extends LinearOpMode{
 
             // reset the timeout time and start motion.
             runtime.reset();
-            leftMotor.setPower(Math.abs(speed));
-            rightMotor.setPower(Math.abs(speed));
+            leftMotors((float)Math.abs(speed));
+            rightMotors((float)Math.abs(speed));
 
             // keep looping while we are still active, and there is time left, and both motors are running.
             while (opModeIsActive() &&
@@ -225,15 +218,38 @@ public class AutonomousControl extends LinearOpMode{
             }
 
             // Stop all motion;
-            leftMotor.setPower(0);
-            rightMotor.setPower(0);
+            leftMotors(0);
+            rightMotors(0);
 
             // Turn off RUN_TO_POSITION
             leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
             //  sleep(250);   // optional pause after each move
         }
+    }
+
+    public  void encTurn(int degrees, float pwr){
+        //turns the robots
+        double secs = 1;
+        if(degrees >= 0){
+            for(int i=0; i<degrees; i++) {
+                encoderDrive(pwr, 1, -1, 60);
+            }
+        }
+        else{
+            for(int i=degrees; i<0; i++){
+                encoderDrive(pwr, -1, 1, 60);
+            }
+        }
+
     }
 }
 
