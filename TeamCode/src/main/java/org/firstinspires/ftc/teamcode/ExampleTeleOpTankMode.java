@@ -54,7 +54,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  * Updated 12/2/2016
  */
 
-@TeleOp(name="Example: TeleOpTankMode", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="Example: TeleOpTankMode", group="Iterative Opmode")  // @AutonomousSense(...) is the other common choice
 @Disabled
 public class ExampleTeleOpTankMode extends OpMode
 {

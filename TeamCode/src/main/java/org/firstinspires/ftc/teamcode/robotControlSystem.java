@@ -56,7 +56,7 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
  * Updated 12/2/2016
  */
 
-@TeleOp(name="RobotControlSystem", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="RobotControlSystem", group="Iterative Opmode")  // @AutonomousSense(...) is the other common choice
 @Disabled
 public class robotControlSystem extends OpMode
 {

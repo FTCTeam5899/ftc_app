@@ -34,7 +34,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Updated 12/2/2016
  */
 
-@TeleOp(name="RobotControlSystem2", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="RobotControlSystem2", group="Iterative Opmode")  // @AutonomousSense(...) is the other common choice
 //@Disabled
 public class robotControlSystem2 extends OpMode
 {
@@ -85,6 +85,7 @@ public class robotControlSystem2 extends OpMode
         // set the drop servo's postition
         double position = 1;
         rServo.setPosition(position);
+        pServo.setPosition(.5);
 
         // eg: Set the drive motor directions:
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -194,7 +195,6 @@ public class robotControlSystem2 extends OpMode
             rServo.setPosition(0);
         }
 
-        pServo.setPosition(rServo.getPosition());
     }
 
     /*
