@@ -9,8 +9,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.UltrasonicSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 /**
  * Created by Radmin on 2/6/2017.
  */
@@ -33,16 +31,19 @@ public class AutonomousSense extends LinearOpMode{
 
     //sensors
 
-    UltrasonicSensor ultra1 = null;
-    UltrasonicSensor ultra2 = null;
-    OpticalDistanceSensor odsSensor;
-    ColorSensor colorSenLeft;
-    ColorSensor colorSenRight;
+    private UltrasonicSensor ultraL = null;
+    private UltrasonicSensor ultraR = null;
+    private OpticalDistanceSensor odsSensor;
+    private ColorSensor colorSenLeft;
+    private ColorSensor colorSenRight;
 
     //other variables
 
-    float mSpd = .3f;
+    float mSpd = .2f;
+    float trnSpd = .3f;
     double distance = .3;
+    double uLeft;
+    double uRight;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -56,6 +57,38 @@ public class AutonomousSense extends LinearOpMode{
     public void  rightMotors(float pow){
         rightMotor.setPower(-pow);
         rightMotor2.setPower(rightMotor.getPower());
+    }
+
+    public void waiting(long m){
+        runtime.reset();
+        while ((runtime.milliseconds() < m) && !super.isStopRequested())
+        {
+            // Wait
+        }
+    }
+
+    public void stopMot(){
+        leftMotors(0);
+        rightMotors(0);
+    }
+
+    public void setUltra(){
+        double tempL = ultraL.getUltrasonicLevel();
+        double tempR = ultraR.getUltrasonicLevel();
+
+        if(uLeft != 0){
+            uLeft = tempL;
+        }
+        if(uRight != 0){
+            uRight = tempR;
+        }
+
+        /*if(Math.abs(uLeft-tempL) <= 8){
+            uLeft = tempL;
+        }
+        if(Math.abs(uRight-tempR) <= 8){
+            uRight = tempR;
+        }*/
     }
 
     @Override
@@ -72,11 +105,11 @@ public class AutonomousSense extends LinearOpMode{
         capBallLift = hardwareMap.dcMotor.get("capLift");
         rServo = hardwareMap.servo.get("forkDrop");
         pServo = hardwareMap.servo.get("pushServo");
-        ultra1 = hardwareMap.ultrasonicSensor.get("ultra1");
-        ultra2 = hardwareMap.ultrasonicSensor.get("ultra2");
+        ultraL = hardwareMap.ultrasonicSensor.get("ultraL");
+        ultraR = hardwareMap.ultrasonicSensor.get("ultraR");
         odsSensor = hardwareMap.opticalDistanceSensor.get("odsSensor");
-        colorSenLeft = hardwareMap.colorSensor.get("colorSen1");
-        colorSenRight = hardwareMap.colorSensor.get("colorSen2");
+        colorSenLeft = hardwareMap.colorSensor.get("colorSenL");
+        colorSenRight = hardwareMap.colorSensor.get("colorSenR");
 
 
         // eg: Set the drive motor directions:
@@ -87,43 +120,108 @@ public class AutonomousSense extends LinearOpMode{
 
         odsSensor.enableLed(true);
 
+        uLeft = ultraL.getUltrasonicLevel();
+        uRight = ultraR.getUltrasonicLevel();
+
+        //Reminder set servos
+
+        while (!super.isStarted()) {
+            setUltra();
+            telemetry.addData("ultraL: ", uLeft);
+            telemetry.addData("ultraR: ", uRight);
+            telemetry.update();
+        }
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        while (!super.isStopRequested()) {
-            while (odsSensor.getLightDetected() < .3) {
+            while (odsSensor.getLightDetected() < .3 && (!super.isStopRequested())) {
                 leftMotors(mSpd);
                 rightMotors(mSpd);
-                telemetry.addData("ODS Light Detectected: ", odsSensor.getLightDetected());
+                telemetry.addData("ODS Light Detected: ", odsSensor.getLightDetected());
                 telemetry.update();
             }
+            stopMot(); // at white line
 
-            while(ultra1.getUltrasonicLevel() != ultra2.getUltrasonicLevel()){
-                leftMotors(mSpd);
-                rightMotors(-mSpd);
-                telemetry.addData("ultra1: ", ultra1.getUltrasonicLevel());
-                telemetry.addData("ultra2; ", ultra2.getUltrasonicLevel());
-                telemetry.update();
-            }
-                while(ultra1.getUltrasonicLevel() != distance){
-                    leftMotors(-mSpd);
-                    rightMotors(mSpd);
+            telemetry.addData("ultraL: ", ultraL.getUltrasonicLevel());
+            telemetry.addData("ultraR: ", ultraR.getUltrasonicLevel());
+            telemetry.addLine("ultraL.status(): " + ultraL.status());
+            telemetry.addLine("ultraR.status(): " + ultraR.status());
+            telemetry.update();
 
-                    leftMotors(mSpd);
-                    rightMotors(mSpd);
+            waiting(5000);
 
-                    leftMotors(mSpd);
-                    rightMotors(-mSpd);
-                    telemetry.addData("ultra1: ", ultra1.getUltrasonicLevel());
-                    telemetry.update();
+
+            while (!(uRight-uLeft >= 3 && uRight-uLeft <= 5)){
+                if((uRight-uLeft > 5)) {
+                    leftMotors(trnSpd);
+                    rightMotors(-trnSpd);
                 }
-            while (odsSensor.getLightDetected() < .5) {
+                else if(uRight-uLeft < 3){
+                    leftMotors(-trnSpd);
+                    rightMotors(trnSpd);
+                }
+                setUltra();
+                telemetry.addData("ultraL: ", uLeft);
+                telemetry.addData("ultraR: ", uRight);
+                telemetry.update();
+            }
+
+            while (ultraL.getUltrasonicLevel() > 8 && (!super.isStopRequested())) {
+                leftMotors(mSpd);
+                rightMotors(mSpd);
+                setUltra();
+                telemetry.addData("ultraL: ", uLeft);
+                telemetry.addData("ultraR: ", uRight);
+                telemetry.update();
+            }
+            stopMot(); // close to wall
+
+            telemetry.addData("ultraL: ", ultraL.getUltrasonicLevel());
+            telemetry.addData("ultraR: ", ultraR.getUltrasonicLevel());
+            telemetry.addLine("ultraL.status(): " + ultraL.status());
+            telemetry.addLine("ultraR.status(): " + ultraR.status());
+            telemetry.update();
+
+            waiting(5000);
+
+            do{
+                leftMotors(trnSpd);
+                rightMotors(-trnSpd);
+                setUltra();
+                telemetry.addData("ultraL: ", uLeft);
+                telemetry.addData("ultraR: ", uRight);
+                telemetry.update();
+            }while(uLeft < uRight && (!super.isStopRequested()));
+
+            stopMot();
+            waiting(10000);
+        stop();
+
+                while(ultraL.getUltrasonicLevel() != distance && (!super.isStopRequested())){
+                    leftMotors(-trnSpd);
+                    rightMotors(trnSpd);
+                    waiting(2000);
+
+                    leftMotors(mSpd);
+                    rightMotors(mSpd);
+                    waiting(2000);
+
+                    leftMotors(trnSpd);
+                    rightMotors(-trnSpd);
+                    telemetry.addData("ultraL: ", ultraL.getUltrasonicLevel());
+                    telemetry.update();
+                    stopMot();
+                    waiting(2000);
+                }
+            while (odsSensor.getLightDetected() < .3 && (!super.isStopRequested())) {
                 leftMotors(-mSpd);
                 rightMotors(-mSpd);
-                telemetry.addData("ODS Light Detectected: ", odsSensor.getLightDetected());
+                telemetry.addData("ODS Light Detected: ", odsSensor.getLightDetected());
                 telemetry.update();
+                stopMot();
+                waiting(2000);
             }
-         }
 
 
     }
