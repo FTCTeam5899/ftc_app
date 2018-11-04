@@ -21,6 +21,7 @@ abstract public class AutoSupplies extends LinearOpMode{
 
     //  Establish detector
     protected GoldAlignDetector goldDetector;
+    protected SamplingOrderDetector orderDetector;
 
     //  Declare OpMode Members
     protected ElapsedTime runtime = new ElapsedTime();
@@ -66,6 +67,24 @@ abstract public class AutoSupplies extends LinearOpMode{
         goldDetector.ratioScorer.weight = 5;
         goldDetector.ratioScorer.perfectRatio = 0;
         goldDetector.enable();
+    }
+
+    public void enableOrderDetector(){
+        orderDetector = new SamplingOrderDetector();
+        orderDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
+        orderDetector.useDefaults();
+
+        orderDetector.downscale = 0; // How much to downscale the input frames
+
+        // Optional Tuning
+        orderDetector.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
+        //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
+        orderDetector.maxAreaScorer.weight = 0.005;
+
+        orderDetector.ratioScorer.weight = 5;
+        orderDetector.ratioScorer.perfectRatio = 0;
+
+        orderDetector.enable();
     }
 
     //  Move for a specified distance (distance: in, power: -1-1)
