@@ -47,7 +47,7 @@ public class GoodGoldAligner extends AutoSupplies{
         else if(order.equals("RIGHT")){
             move(600, 0.3, -0.3);
         }
-        else if(order.equals("Center")){
+        else if(order.equals("CENTER")){
 
         }
         else{
