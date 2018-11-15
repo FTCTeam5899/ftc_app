@@ -12,13 +12,14 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp
 public class MotorTest extends LinearOpMode {
 
-    private DcMotor motor;
+    private DcMotor motorL;
+    private DcMotor motorR;
 
     @Override
     public void runOpMode() {
 
-        motor = hardwareMap.get(DcMotor.class, "motorL");
-        motor = hardwareMap.get(DcMotor.class, "motorR");
+        motorL = hardwareMap.get(DcMotor.class, "motorL");
+        motorR = hardwareMap.get(DcMotor.class, "motorR");
         double max = 1;
         double pow = 0;
 
