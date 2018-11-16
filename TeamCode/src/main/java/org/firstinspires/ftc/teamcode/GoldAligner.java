@@ -35,7 +35,7 @@ public class GoldAligner extends AutoSupplies{
         //move(2000,.5,.5);;
 
         //turns until is aligned with cube
-        move(800,0.4,0.4);
+        move(400,0.4,0.4);
         move(600, -0.3, 0.3);
 
         while(!goldDetector.getAligned()){
@@ -74,7 +74,7 @@ public class GoldAligner extends AutoSupplies{
                telemetry.update();
             }
             //drives until over cube
-            while(goldDetector.getAligned() && times > 0){
+            while(goldDetector.getAligned() && times > -400){
                 goldDetector.alignSize = 400.0;
                move(50,0.5,0.5);
                times -= 50;
@@ -88,6 +88,18 @@ public class GoldAligner extends AutoSupplies{
             telemetry.addData("Found", goldDetector.isFound());
             telemetry.addData("time", times);
             telemetry.update();
+        }
+        if(times > 850){
+            telemetry.addData("Founds", "Left");
+        }
+        else if(times >= 850 && times < 1400){
+            telemetry.addData("Founds", "Center");
+        }
+        else if(times <= 1400){
+            telemetry.addData("Founds", "Right");
+        }
+        else{
+            telemetry.addData("Founds", "Error");
         }
         //resets detector
         telemetry.addData("Location", goldDetector.getXPosition());
