@@ -30,25 +30,27 @@ public class GoodGoldAligner extends AutoSupplies{
         double y = 0;
         double times = 0;
         String order = new String();
+        String order2 = new String();
         //  Wait until start
         waitForStart();
 
         //pause( 3000 );
         //move(2000,.5,.5);;
         order = orderDetector.getCurrentOrder().toString();
+        order2 = orderDetector.getLastOrder().toString();
 
         telemetry.addData("Current Order", orderDetector.getCurrentOrder().toString()); // The current result for the frame
-        telemetry.addData("Last Order", orderDetector.getLastOrder().toString());
+        telemetry.addData("Last Order", orderDetector.getLastOrder().toString()); // The last order for the frame
         telemetry.update();
         move(800,0.4,0.4);
-        if(order.equals("LEFT")){
-            move(600, -0.3, 0.3);
+        if(order.equals("LEFT") || order2.equals("LEFT")){
+            move(300, -0.3, 0.3);
         }
-        else if(order.equals("RIGHT")){
-            move(600, 0.3, -0.3);
+        else if(order.equals("RIGHT") || order2.equals("RIGHT")){
+            move(300, 0.3, -0.3);
         }
-        else if(order.equals("CENTER")){
-
+        else if(order.equals("CENTER") || order2.equals("CENTER")){
+            move(1000, 0.3,0.3);
         }
         else{
             while(runtime.milliseconds()<20000){
@@ -57,7 +59,7 @@ public class GoodGoldAligner extends AutoSupplies{
                 telemetry.update();
             }
         }
-            move(1700, 0.5, 0.5);
+        move(1700, 0.5, 0.5);
         //  Turn all motors off and sleep
         motorFwdLeft.setPower(0);
         motorFwdRight.setPower(0);
