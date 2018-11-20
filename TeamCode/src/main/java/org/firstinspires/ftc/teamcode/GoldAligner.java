@@ -28,6 +28,7 @@ public class GoldAligner extends AutoSupplies{
         double x = 0;
         double y = 0;
         double times = 0;
+        double tTime = 0;
         //  Wait until start
         waitForStart();
 
@@ -37,24 +38,26 @@ public class GoldAligner extends AutoSupplies{
         //turns until is aligned with cube
         move(400,0.4,0.4);
         move(600, -0.3, 0.3);
-
         while(!goldDetector.getAligned()){
             if(goldDetector.isFound()){
                 x =  goldDetector.getXPosition();
                 if(x >= 320) {
                     move(50, 0.3, -0.3);
+                    tTime += 50;
                 }
                 else{
                     move(50, -0.3, 0.3);
+                    tTime += 50;
                 }
             }
             else {
                 move(50, 0.3, -0.3);
+                tTime += 50;
             }
         }
         goldDetector.alignSize = 640.0;
         x =  goldDetector.getXPosition();
-        times = 1700;
+        times = 2100;
         //y = detector.getYPosition
         while(x<630.0 && x>10.0 && goldDetector.isFound() && times > 0){
             //resets detector
@@ -74,7 +77,7 @@ public class GoldAligner extends AutoSupplies{
                telemetry.update();
             }
             //drives until over cube
-            while(goldDetector.getAligned() && times > -400){
+            while(goldDetector.getAligned() && times > 0){
                 goldDetector.alignSize = 400.0;
                move(50,0.5,0.5);
                times -= 50;
@@ -89,23 +92,27 @@ public class GoldAligner extends AutoSupplies{
             telemetry.addData("time", times);
             telemetry.update();
         }
-        if(times > 850){
-            telemetry.addData("Founds", "Left");
+        move(500, 0.5, 0.5);
+        if(tTime < 700){
+            telemetry.addData("Founds", "left" + tTime);
+            move(600, 0.4, 0);
         }
-        else if(times >= 850 && times < 1400){
-            telemetry.addData("Founds", "Center");
+        else if(tTime >= 700 && tTime < 1200){
+            telemetry.addData("Founds", "Center" + tTime);
         }
-        else if(times <= 1400){
-            telemetry.addData("Founds", "Right");
+        else if(tTime >= 1200){
+            telemetry.addData("Founds", "Right" + tTime);
+            move(600, 0, 0.4);
         }
         else{
-            telemetry.addData("Founds", "Error");
+            telemetry.addData("Founds", "Error" + tTime);
         }
+        move(900, 0.5, 0.5);
         //resets detector
         telemetry.addData("Location", goldDetector.getXPosition());
         telemetry.addData("Found", goldDetector.isFound());
         telemetry.update();
-        move(500, 0.5, 0.5);
+
         pause(3000);
         goldDetector.alignSize = 100.0;
 
