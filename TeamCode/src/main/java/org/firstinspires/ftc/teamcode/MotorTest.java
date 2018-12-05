@@ -22,6 +22,7 @@ public class MotorTest extends LinearOpMode {
         motorR = hardwareMap.get(DcMotor.class, "motorR");
         double max = 1;
         double pow = 0;
+        double pow2 = 0;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -32,6 +33,7 @@ public class MotorTest extends LinearOpMode {
         while (opModeIsActive()) {
 
             pow = -this.gamepad1.left_stick_y;
+            pow2 = -this.gamepad1.right_stick_y;
 
             if(this.gamepad1.x){max = 0.3;}
             if(this.gamepad1.y){max = 0.5;}
@@ -39,7 +41,7 @@ public class MotorTest extends LinearOpMode {
             if(this.gamepad1.a){max = 1.0;}
 
             motorL.setPower(pow * max);
-            motorR.setPower(pow * max);
+            motorR.setPower(pow2 * max);
 
             telemetry.addData("Max Speed", max);
             telemetry.addData("Status", "Running");

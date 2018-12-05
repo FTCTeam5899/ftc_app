@@ -26,19 +26,15 @@ public class GoldAligner extends AutoSupplies{
 
         initForAutonomous();
         double x = 0;
-        double y = 0;
         double times = 0;
         double tTime = 0;
         //  Wait until start
         waitForStart();
 
-        //pause( 3000 );
-        //move(2000,.5,.5);;
-
         //turns until is aligned with cube
         move(400,0.4,0.4);
         move(600, -0.3, 0.3);
-        while(!goldDetector.getAligned()){
+        while(!goldDetector.getAligned() && !isStopRequested()){
             if(goldDetector.isFound()){
                 x =  goldDetector.getXPosition();
                 if(x >= 320) {
@@ -57,12 +53,12 @@ public class GoldAligner extends AutoSupplies{
         }
         goldDetector.alignSize = 640.0;
         x =  goldDetector.getXPosition();
-        times = 2100;
+        times = 3100;
         //y = detector.getYPosition
-        while(x<630.0 && x>10.0 && goldDetector.isFound() && times > 0){
+        while(x<630.0 && x>10.0 && goldDetector.isFound() && times > 0 && !isStopRequested()){
             //resets detector
             goldDetector.alignSize = 100.0;
-            while(!goldDetector.getAligned() && times > 0){
+            while(!goldDetector.getAligned() && times > 0 && !isStopRequested()){
                x =  goldDetector.getXPosition();
                if(x >= 320) {
                    move(50, 0.3, -0.3);
@@ -77,7 +73,7 @@ public class GoldAligner extends AutoSupplies{
                telemetry.update();
             }
             //drives until over cube
-            while(goldDetector.getAligned() && times > 0){
+            while(goldDetector.getAligned() && times > 0 && !isStopRequested()){
                 goldDetector.alignSize = 400.0;
                move(50,0.5,0.5);
                times -= 50;
@@ -92,7 +88,11 @@ public class GoldAligner extends AutoSupplies{
             telemetry.addData("time", times);
             telemetry.update();
         }
+
+        //moves forward
         move(500, 0.5, 0.5);
+
+        //determines if the cube was left right or center and turns toward the crater
         if(tTime < 700){
             telemetry.addData("Founds", "left" + tTime);
             move(600, 0.4, 0);
@@ -107,6 +107,7 @@ public class GoldAligner extends AutoSupplies{
         else{
             telemetry.addData("Founds", "Error" + tTime);
         }
+        //moves forward
         move(900, 0.5, 0.5);
         //resets detector
         telemetry.addData("Location", goldDetector.getXPosition());
@@ -116,11 +117,6 @@ public class GoldAligner extends AutoSupplies{
         pause(3000);
         goldDetector.alignSize = 100.0;
 
-        //turns toward depot
-        //move(1500,0,0.3);
-        //drives toward depot
-        //move(2000, 0.5, 0.5);
-
         //  Turn all motors off and sleep
         motorFwdLeft.setPower(0);
         motorFwdRight.setPower(0);
@@ -128,6 +124,5 @@ public class GoldAligner extends AutoSupplies{
         motorBackRight.setPower(0);
         sleep(1000);
     }
-
 
 }

@@ -19,6 +19,7 @@ public class BaseDrive extends LinearOpMode {
 
         private static double left;
         private static double right;
+        private double max = 1.0;
 
         @Override
         public void runOpMode() {
@@ -36,8 +37,11 @@ public class BaseDrive extends LinearOpMode {
             // run until the end of the match (driver presses STOP)
             while (opModeIsActive()) {
 
-                left = -this.gamepad1.left_stick_y;
-                right = this.gamepad1.right_stick_y;
+                if(this.gamepad1.x && this.gamepad1.y && this.gamepad1.b && this.gamepad1.a && max == 1.0){max = 0.3;}
+                else if(this.gamepad1.x && this.gamepad1.y && this.gamepad1.b && this.gamepad1.a){max = 1;}
+
+                left = -this.gamepad1.left_stick_y * max;
+                right = this.gamepad1.right_stick_y * max;
 
                 motorFwdLeft.setPower(left);
                 motorFwdRight.setPower(right);
