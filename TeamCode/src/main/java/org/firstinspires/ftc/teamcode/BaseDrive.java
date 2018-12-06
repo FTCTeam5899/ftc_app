@@ -40,12 +40,13 @@ public class BaseDrive extends LinearOpMode {
                 if(this.gamepad1.x && this.gamepad1.y && this.gamepad1.b && this.gamepad1.a && max == 1.0){max = 0.3;}
                 else if(this.gamepad1.x && this.gamepad1.y && this.gamepad1.b && this.gamepad1.a){max = 1;}
 
-                left = -this.gamepad1.left_stick_y * max;
+
+                left = this.gamepad1.left_stick_y * max;
                 right = this.gamepad1.right_stick_y * max;
 
-                motorFwdLeft.setPower(left);
+                motorFwdLeft.setPower(-left);
                 motorFwdRight.setPower(right);
-                motorBackLeft.setPower(-left);
+                motorBackLeft.setPower(left);
                 motorBackRight.setPower(-right);
 
                 //telemetry.addData("Nathan Mode", mode);

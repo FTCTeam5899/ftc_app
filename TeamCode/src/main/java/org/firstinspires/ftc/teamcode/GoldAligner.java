@@ -28,6 +28,7 @@ public class GoldAligner extends AutoSupplies{
         double x = 0;
         double times = 0;
         double tTime = 0;
+        double angle = getAngle();
         //  Wait until start
         waitForStart();
 
@@ -109,10 +110,22 @@ public class GoldAligner extends AutoSupplies{
         }
         //moves forward
         move(900, 0.5, 0.5);
+        angle = getAngle();
         //resets detector
         telemetry.addData("Location", goldDetector.getXPosition());
         telemetry.addData("Found", goldDetector.isFound());
+        telemetry.addData("Angle", angle);
         telemetry.update();
+
+
+
+        sleep(5000);
+        if(angle >= 0){
+            turn(-((-45) - ((int)angle)), .2);
+        }
+        else{
+            turn((45-((int)angle)),.2);
+        }
 
         pause(3000);
         goldDetector.alignSize = 100.0;

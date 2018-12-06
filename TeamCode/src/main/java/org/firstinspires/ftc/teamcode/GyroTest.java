@@ -10,6 +10,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -22,7 +23,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 @Autonomous(name="Drive Avoid Imu", group="Exercises")
-//@Disabled
+@Disabled
 public class GyroTest extends AutonomousTest{
     BNO055IMU               imu;
     Orientation             lastAngles = new Orientation();
@@ -125,7 +126,7 @@ public class GyroTest extends AutonomousTest{
     /**
      * Resets the cumulative angle tracking to zero.
      */
-    private void resetAngle()
+    public void resetAngle()
     {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
@@ -136,7 +137,7 @@ public class GyroTest extends AutonomousTest{
      * Get current cumulative angle rotation from last reset.
      * @return Angle in degrees. + = left, - = right.
      */
-    private double getAngle()
+    public double getAngle()
     {
         // We experimentally determined the Z axis is the axis we want to use for heading angle.
         // We have to process the angle because the imu works in euler angles so the Z axis is
@@ -218,9 +219,7 @@ public class GyroTest extends AutonomousTest{
         if (degrees < 0)
         {
             // On right turn we have to get off zero first.
-            while (opModeIsActive() && getAngle() == 0) {}
-
-            while (opModeIsActive() && getAngle() > degrees) {}
+            while (opModeIsActive() && getAngle() >= degrees) {}
         }
         else    // left turn.
             while (opModeIsActive() && getAngle() < degrees) {}
