@@ -120,12 +120,9 @@ public class GoldAligner extends AutoSupplies{
 
 
         sleep(5000);
-        if(angle >= 0){
-            turn(-((-45) - ((int)angle)), .2);
-        }
-        else{
-            turn((45-((int)angle)),.2);
-        }
+        //if(angle >= 0){turn(45 - ((int)angle),.2);}
+        //else{turn(45 + ((int)angle),.2);}
+        turnTo(45,.2);
 
         pause(3000);
         goldDetector.alignSize = 100.0;

@@ -145,10 +145,10 @@ abstract public class AutoSupplies extends LinearOpMode{
         resetAngle();
         telemetry.addData("Angle",getAngle());
         telemetry.update();
-        if(degrees <= 0){
+        if(degrees >= 0){
             left *= -1;
         }
-        else if(degrees > 0){
+        else if(degrees < 0){
             right *= -1;
         }
 
@@ -157,7 +157,7 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorBackRight.setPower(-power * right);
         motorFwdRight.setPower(power* right);
 
-        if (degrees <= 0)
+        if (degrees < 0)
         {
             // On right turn we have to get off zero first.
             while (opModeIsActive() && getAngle() >= degrees) {telemetry.addData("Angle2",getAngle());telemetry.update();}
@@ -165,6 +165,43 @@ abstract public class AutoSupplies extends LinearOpMode{
         else    // left turn.
             while (opModeIsActive() && getAngle() < degrees) {telemetry.addData("Angle2",getAngle());telemetry.update();}
 
+        // turn the motors off.
+        motorBackLeft.setPower(0);
+        motorFwdLeft.setPower(0);
+        motorBackRight.setPower(0);
+        motorFwdRight.setPower(0);
+    }
+    public void turnTo(int degrees, double power){
+        int left = 1;
+        int right = 1;
+        telemetry.addData("Angle3",getAngle());
+        telemetry.update();
+        if(getAngle() >= degrees){
+            left *= -1;
+        }
+        else if(getAngle() < degrees){
+            right *= -1;
+        }
+
+        motorBackLeft.setPower(power * left);
+        motorFwdLeft.setPower(-power * left);
+        motorBackRight.setPower(-power * right);
+        motorFwdRight.setPower(power* right);
+
+        if (getAngle() > degrees)
+        {
+            // On left turn we have to get off zero first.
+            while (opModeIsActive() && getAngle() >= degrees) {
+                telemetry.addData("Angle4",getAngle());
+                telemetry.update();
+            }
+        }
+        else {    // right turn.
+            while (opModeIsActive() && getAngle() <= degrees) {
+                telemetry.addData("Angle4", getAngle());
+                telemetry.update();
+            }
+        }
         // turn the motors off.
         motorBackLeft.setPower(0);
         motorFwdLeft.setPower(0);
@@ -225,12 +262,11 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorFwdRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFwdLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-
-        imu.initialize(gyroParameters);
-
         telemetry.addData("Mode", "calibrating...");
         telemetry.update();
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(gyroParameters);
 
         telemetry.clear();
         telemetry.addData("Status", "Initialized");
