@@ -124,6 +124,32 @@ public class GoldAligner extends AutoSupplies{
         //else{turn(45 + ((int)angle),.2);}
         turnTo(45,.2);
 
+        pause(500);
+
+        if(tTime < 700){
+            move(2200, 0.2, 0.2);
+        }
+        else if(tTime >= 700 && tTime < 1200){
+            move(2600, 0.2, 0.2);
+        }
+        else if(tTime >= 1200){
+            move(3000, 0.2, 0.2);
+        }
+        else{
+            telemetry.addData("Aligner", "Error" + tTime);
+        }
+
+        move(200, -0.2, -0.2);
+
+        pause(200);
+
+        resetAngle();
+        turnTo(90,.2);
+
+        move(2800, -0.2, -0.2);
+
+        move(4000, 0.4, 0.4);
+
         pause(3000);
         goldDetector.alignSize = 100.0;
 

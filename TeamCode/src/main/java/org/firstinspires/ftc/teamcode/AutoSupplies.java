@@ -242,7 +242,45 @@ abstract public class AutoSupplies extends LinearOpMode{
 
         return globalAngle;
     }
+    public void moveStraight(long millis, double power){
+        runtime.reset();
+        if(power >= 0.9 || power <= -0.9){
+            power *= 0.9;
+        }
+        double left = power;
+        double right = power;
+        while(!isStopRequested() && runtime.milliseconds() <= millis) {
+            motorBackLeft.setPower(-left);
+            motorFwdLeft.setPower(left);
+            motorBackRight.setPower(right);
+            motorFwdRight.setPower(-right);
+            if(getAngle() >= 0){
+                if(power>=0) {
+                    right *= 0.9;
+                }
+                else{
+                    left *= 0.9;
+                }
+            }
+            else if(getAngle() <= 0){
+                if(power>=0) {
+                    left *= 0.9;
+                }
+                else{
+                    right *= 0.9;
+                }
+            }
+            else{
+                left = power;
+                right = power;
+            }
+        }
+        motorBackLeft.setPower(0);
+        motorFwdLeft.setPower(0);
+        motorBackRight.setPower(0);
+        motorFwdRight.setPower(0);
 
+    }
     //  Init all hardware
     public void initForAutonomous()
     {

@@ -34,10 +34,21 @@ public class GyroTest extends AutonomousTest{
 
         //  Wait until start
         waitForStart();
-        resetAngle();
-        while(opModeIsActive()){
+
+        while(opModeIsActive() && !isStopRequested()){
+            resetAngle();
+            moveStraight(10000,0.5);
             telemetry.addData("Angle",getAngle());
             telemetry.update();
+            pause(2000);
+            turnTo(0,0.1);
+            telemetry.addData("Angle",getAngle());
+            telemetry.update();
+            pause(2000);
+            moveStraight(10000, -0.5);
+            telemetry.addData("Angle",getAngle());
+            telemetry.update();
+            sleep(2000);
         }
     }
 }
