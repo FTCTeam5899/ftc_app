@@ -29,6 +29,7 @@ abstract public class AutoSupplies extends LinearOpMode{
     protected DcMotor motorFwdRight;
     protected DcMotor motorBackLeft;
     protected DcMotor motorBackRight;
+    protected Servo mServo;
     protected BNO055IMU imu;
     protected Orientation lastAngles = new Orientation();
     //  Establish detector
@@ -69,6 +70,7 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorBackRight.setPower(0);
     }
 
+    //sets motors power
     public void setPower(double leftPow, double rightPow) {
         l = leftPow;
         r = rightPow;
@@ -114,23 +116,6 @@ abstract public class AutoSupplies extends LinearOpMode{
         orderDetector.enable();
     }
 
-    //  Move for a specified distance (distance: in, power: -1-1)
-    //public void moveDistance(double in, double power){
-    //    runtime.reset();
-    //    long millis = 0;
-    //    millis = (long)(1000.0 * in / 27.5);
-    //    while (opModeIsActive() && runtime.milliseconds() <= millis) {
-    //        motorFwdLeft.setPower(power);
-    //        motorFwdRight.setPower(-power);
-    //        motorBackLeft.setPower(-power);
-    //        motorBackRight.setPower(power);
-    //    }
-    //    motorFwdLeft.setPower(0);
-    //    motorFwdRight.setPower(0);
-    //    motorBackLeft.setPower(0);
-    //    motorBackRight.setPower(0);
-    //}
-
     //  Pause for a specified time (time: mili secs)
     public void pause(long millis){
         runtime.reset();
@@ -138,7 +123,7 @@ abstract public class AutoSupplies extends LinearOpMode{
 
         }
     }
-    //Turns Robot to a certain point
+    //Turns Robot a certain number of degrees
     public void turn(int degrees, double power){
         int left = 1;
         int right = 1;
@@ -171,6 +156,8 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorBackRight.setPower(0);
         motorFwdRight.setPower(0);
     }
+
+    // turns the robot to a set angle
     public void turnTo(int degrees, double power){
         int left = 1;
         int right = 1;
@@ -242,6 +229,8 @@ abstract public class AutoSupplies extends LinearOpMode{
 
         return globalAngle;
     }
+
+    //drives the robot in a straight line using the gyro sensor
     public void moveStraight(long millis, double power){
         runtime.reset();
         if(power >= 0.9 || power <= -0.9){
@@ -254,26 +243,30 @@ abstract public class AutoSupplies extends LinearOpMode{
             motorFwdLeft.setPower(left);
             motorBackRight.setPower(right);
             motorFwdRight.setPower(-right);
-            if(getAngle() >= 0){
+            if(getAngle() >= 1){
                 if(power>=0) {
-                    right *= 0.9;
+                    right *= 0.99;
                 }
                 else{
-                    left *= 0.9;
+                    left *= 0.99;
                 }
             }
-            else if(getAngle() <= 0){
+            else if(getAngle() <= -1){
                 if(power>=0) {
-                    left *= 0.9;
+                    left *= 0.99;
                 }
                 else{
-                    right *= 0.9;
+                    right *= 0.99;
                 }
             }
             else{
                 left = power;
                 right = power;
             }
+            telemetry.addData("Angle", getAngle());
+            telemetry.addData("LPower",left);
+            telemetry.addData("RPower",right);
+            telemetry.update();
         }
         motorBackLeft.setPower(0);
         motorFwdLeft.setPower(0);
@@ -281,6 +274,7 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorFwdRight.setPower(0);
 
     }
+
     //  Init all hardware
     public void initForAutonomous()
     {
@@ -299,6 +293,8 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFwdRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFwdLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        mServo = hardwareMap.get(Servo.class, "mServo");
 
         telemetry.addData("Mode", "calibrating...");
         telemetry.update();

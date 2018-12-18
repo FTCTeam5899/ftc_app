@@ -12,9 +12,9 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="GoldAligner", group="DogeCV")
+@Autonomous(name="DepotLeft", group="Official")
 
-public class GoldAligner extends AutoSupplies{
+public class DepotLeft extends AutoSupplies{
 
 
     @Override
@@ -32,6 +32,9 @@ public class GoldAligner extends AutoSupplies{
         //  Wait until start
         waitForStart();
 
+        //locks servo in place
+        mServo.setPosition(0);
+        //moves forward, turns left, then slowly
         //turns until is aligned with cube
         move(400,0.4,0.4);
         move(600, -0.3, 0.3);
@@ -55,7 +58,7 @@ public class GoldAligner extends AutoSupplies{
         goldDetector.alignSize = 640.0;
         x =  goldDetector.getXPosition();
         times = 3100;
-        //y = detector.getYPosition
+        //drives toward cube until it can not be found any longer
         while(x<630.0 && x>10.0 && goldDetector.isFound() && times > 0 && !isStopRequested()){
             //resets detector
             goldDetector.alignSize = 100.0;
@@ -73,7 +76,6 @@ public class GoldAligner extends AutoSupplies{
                telemetry.addData("time", times);
                telemetry.update();
             }
-            //drives until over cube
             while(goldDetector.getAligned() && times > 0 && !isStopRequested()){
                 goldDetector.alignSize = 400.0;
                move(50,0.5,0.5);
@@ -119,36 +121,43 @@ public class GoldAligner extends AutoSupplies{
 
 
 
-        sleep(5000);
-        //if(angle >= 0){turn(45 - ((int)angle),.2);}
-        //else{turn(45 + ((int)angle),.2);}
-        turnTo(45,.2);
+        sleep(500);
+
+        turnTo(40,.2);
 
         pause(500);
 
+        resetAngle();
         if(tTime < 700){
-            move(2200, 0.2, 0.2);
+            moveStraight(2200, 0.2);
         }
         else if(tTime >= 700 && tTime < 1200){
-            move(2600, 0.2, 0.2);
+            moveStraight(2600, 0.2);
         }
         else if(tTime >= 1200){
-            move(3000, 0.2, 0.2);
+            moveStraight(3000, 0.2);
         }
         else{
             telemetry.addData("Aligner", "Error" + tTime);
         }
 
-        move(200, -0.2, -0.2);
+        resetAngle();
+        moveStraight(500, -0.2);
 
         pause(200);
 
         resetAngle();
-        turnTo(90,.2);
+        turnTo(80,.2);
 
-        move(2800, -0.2, -0.2);
+        resetAngle();
+        moveStraight(4000, -0.2);
 
-        move(4000, 0.4, 0.4);
+        resetAngle();
+        moveStraight(500, 0.3);
+        mServo.setPosition(0.6);
+        pause(200);
+        resetAngle();
+        moveStraight(6500, 0.4);
 
         pause(3000);
         goldDetector.alignSize = 100.0;
