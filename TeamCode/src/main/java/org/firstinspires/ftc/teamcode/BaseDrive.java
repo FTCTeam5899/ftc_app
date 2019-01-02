@@ -16,10 +16,17 @@ public class BaseDrive extends LinearOpMode {
         private DcMotor motorFwdRight;
         private DcMotor motorBackLeft;
         private DcMotor motorBackRight;
+        private DcMotor motorL;
+        private DcMotor motorR;
+        private DcMotor motorS;
+
+        private Servo mServo;
 
         private static double left;
         private static double right;
+
         private double max = 1.0;
+        private boolean spin = false;
 
         @Override
         public void runOpMode() {
@@ -28,6 +35,12 @@ public class BaseDrive extends LinearOpMode {
             motorBackLeft = hardwareMap.get(DcMotor.class, "motorBackLeft");
             motorFwdLeft = hardwareMap.get(DcMotor.class, "motorFwdLeft");
             motorBackRight = hardwareMap.get(DcMotor.class, "motorBackRight");
+
+            motorL = hardwareMap.get(DcMotor.class, "motorL");
+            motorR = hardwareMap.get(DcMotor.class, "motorR");
+            motorS = hardwareMap.get(DcMotor.class, "motorS");
+
+            mServo = hardwareMap.get(Servo.class, "mServo");
 
             telemetry.addData("Status", "Initialized");
             telemetry.update();
@@ -44,13 +57,34 @@ public class BaseDrive extends LinearOpMode {
                 left = this.gamepad1.left_stick_y * max;
                 right = this.gamepad1.right_stick_y * max;
 
+
                 motorFwdLeft.setPower(-left);
                 motorFwdRight.setPower(right);
                 motorBackLeft.setPower(left);
                 motorBackRight.setPower(-right);
 
-                //telemetry.addData("Nathan Mode", mode);
+                motorL.setPower(this.gamepad2.left_stick_y);
+                motorR.setPower(this.gamepad2.right_stick_y);
 
+                if(this.gamepad2.a){
+                    spin = !spin;
+                }
+
+                if(spin){
+                    motorS.setPower(1);
+                }
+                else{
+                    motorS.setPower(0);
+                }
+
+                if(this.gamepad1.dpad_up){
+                    mServo.setPosition(mServo.getPosition()+0.01);
+                }
+                else if(this.gamepad1.dpad_down){
+                    mServo.setPosition(mServo.getPosition()-0.01);
+                }
+
+                telemetry.addData("mServo Pos", mServo.getPosition());
                 telemetry.addData("Status", "Running");
                 telemetry.update();
 

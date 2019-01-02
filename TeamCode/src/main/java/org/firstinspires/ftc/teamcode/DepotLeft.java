@@ -33,10 +33,10 @@ public class DepotLeft extends AutoSupplies{
         waitForStart();
 
         //locks servo in place
-        mServo.setPosition(0);
+        mServo.setPosition(0.35);
         //moves forward, turns left, then slowly
         //turns until is aligned with cube
-        move(400,0.4,0.4);
+        move(300,0.4,0.4);
         move(600, -0.3, 0.3);
         while(!goldDetector.getAligned() && !isStopRequested()){
             if(goldDetector.isFound()){
@@ -154,7 +154,7 @@ public class DepotLeft extends AutoSupplies{
 
         resetAngle();
         moveStraight(500, 0.3);
-        mServo.setPosition(0.6);
+        mServo.setPosition(0.7);
         pause(200);
         resetAngle();
         moveStraight(6500, 0.4);
