@@ -25,6 +25,7 @@ public class BaseDrive extends LinearOpMode {
         private static double left;
         private static double right;
 
+        private double smax = 1.0;
         private double max = 1.0;
         private boolean spin = false;
 
@@ -69,9 +70,15 @@ public class BaseDrive extends LinearOpMode {
                 if(this.gamepad2.a){
                     spin = !spin;
                 }
+                if(this.gamepad2.y){
+                    smax += 0.01;
+                }
+                else if(this.gamepad2.x){
+                    smax -= 0.01;
+                }
 
                 if(spin){
-                    motorS.setPower(1);
+                    motorS.setPower(0.8);
                 }
                 else{
                     motorS.setPower(0);
@@ -84,6 +91,7 @@ public class BaseDrive extends LinearOpMode {
                     mServo.setPosition(mServo.getPosition()-0.01);
                 }
 
+                telemetry.addData("Intake Power" , smax);
                 telemetry.addData("mServo Pos", mServo.getPosition());
                 telemetry.addData("Status", "Running");
                 telemetry.update();
