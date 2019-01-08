@@ -89,6 +89,9 @@ public class CraterLeftHigh extends AutoSupplies{
         move(500, 0.5, 0.5);
         //moves backwards
         move(600, -0.5, -0.5);
+        if(tTime >= 1200){
+            move(300, -0.5, -0.5);
+        }
         //turns toward the depot
         turnTo(90,0.21);
         //determines if the cube was left right or center and moves straight for the allotted time
@@ -100,32 +103,41 @@ public class CraterLeftHigh extends AutoSupplies{
             moveStraight(1325, 0.5);
         } else if (tTime >= 1200) {
             telemetry.addData("Founds", "Right" + tTime);
-            moveStraight(1850, 0.5);
+            moveStraight(1525, 0.5);
         } else {
             telemetry.addData("Founds", "Error" + tTime);
         }
+        //turns to avoid other partners gold and silver
         pause(200);
         resetAngle();
         pause(200);
         turnTo(76,0.21);
+        //drives to other side of partners gold and silver
         moveStraight(2800, 0.5);
         pause(200);
+        //turns toward wall
         resetAngle();
         pause(200);
         turnTo(-45, 0.25);
+        //drives to align along wall
         move(1500, 0.4, 0.4);
         move(500,0.2,0.2);
+        //backs off of wall
         moveStraight(800, -0.2);
+        //turns toward depot
         pause(200);
         resetAngle();
         pause(200);
         turnTo(90, 0.25);
+        //drives into depot and aligns with wall
         moveStraight(2000, -0.5);
         moveStraight(600, -0.2);
+        //moves slightly out of the depot and drops the marker
         moveStraight(400, 0.5);
         mServo.setPosition(0.7);
         pause(200);
         resetAngle();
+        //drives into crater
         moveStraight(6000, 0.7);
 
 
