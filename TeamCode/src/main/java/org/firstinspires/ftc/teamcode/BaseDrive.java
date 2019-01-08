@@ -67,10 +67,13 @@ public class BaseDrive extends LinearOpMode {
                 motorL.setPower(this.gamepad2.left_stick_y);
                 motorR.setPower(this.gamepad2.right_stick_y);
 
-                if(this.gamepad2.a){
-                    spin = !spin;
-                }
-                if(this.gamepad2.y){
+                    //if(this.gamepad2.right_trigger >= 0){
+                    //        spin = true;
+                    //}
+                    //else{
+                    //    spin = false;
+                    //}
+                    if(this.gamepad2.y){
                     smax += 0.01;
                 }
                 else if(this.gamepad2.x){
