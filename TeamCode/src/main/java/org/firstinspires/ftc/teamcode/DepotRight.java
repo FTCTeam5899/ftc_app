@@ -113,7 +113,7 @@ public class DepotRight extends AutoSupplies{
 
         sleep(500);
 
-        turnTo(-40,.2);
+        turnTo(-40,.25);
 
         pause(500);
 
@@ -137,7 +137,7 @@ public class DepotRight extends AutoSupplies{
         pause(200);
 
         resetAngle();
-        turnTo(-80,.2);
+        turnTo(-80,.25);
 
         resetAngle();
         moveStraight(4000, -0.2);

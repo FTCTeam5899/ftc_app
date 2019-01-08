@@ -94,7 +94,7 @@ public class CraterRightLow extends AutoSupplies{
             move(300, -0.5, -0.5);
         }
         //turns toward the depot
-        turnTo(90,0.21);
+        turnTo(90,0.25);
         //determines if the cube was left right or center and moves straight for the allotted time
         if (tTime < 700) {
             telemetry.addData("Founds", "left" + tTime);
@@ -112,24 +112,27 @@ public class CraterRightLow extends AutoSupplies{
         pause(200);
         resetAngle();
         pause(200);
-        moveStraight(2000, 0.5);
         pause(200);
         resetAngle();
         pause(200);
-        turnTo(-45,0.2);
-        move(500, 0.3, -0.3);
-        move(800, -0.3, -0.2);
+        turnTo(-45,0.25);
+        //moves to and aligns with the wall
+        move(1300, 0.3, 0.3);
+        //backs up
+        move(600, -0.2, -0.2);
+        //turns to face crater and backs into depot
         pause(200);
         resetAngle();
         pause(200);
-        turnTo(-90,0.2);
-        moveStraight(2600, -0.4);
+        turnTo(-90,0.25);
+        moveStraight(3800, -0.4);
+        //moves forward, drops the team marker, and moves to the crater
         moveStraight(400, 0.5);
         mServo.setPosition(0.7);
         pause(200);
         resetAngle();
         //drives into crater
-        moveStraight(6000, 0.7);
+        moveStraight(5000, 0.7);
 
 
 

@@ -93,7 +93,7 @@ public class CraterLeftHigh extends AutoSupplies{
             move(300, -0.5, -0.5);
         }
         //turns toward the depot
-        turnTo(90,0.21);
+        turnTo(90,0.25);
         //determines if the cube was left right or center and moves straight for the allotted time
         if (tTime < 700) {
             telemetry.addData("Founds", "left" + tTime);
@@ -111,7 +111,7 @@ public class CraterLeftHigh extends AutoSupplies{
         pause(200);
         resetAngle();
         pause(200);
-        turnTo(76,0.21);
+        turnTo(77,0.25);
         //drives to other side of partners gold and silver
         moveStraight(2800, 0.5);
         pause(200);
