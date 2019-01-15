@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -21,6 +22,7 @@ public class BaseDrive extends LinearOpMode {
         private DcMotor motorS;
 
         private Servo mServo;
+        private RevBlinkinLedDriver lights;
 
         private static double left;
         private static double right;
@@ -40,7 +42,7 @@ public class BaseDrive extends LinearOpMode {
             motorS = hardwareMap.get(DcMotor.class, "motorS");
 
             mServo = hardwareMap.get(Servo.class, "mServo");
-
+            lights = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
             telemetry.addData("Status", "Initialized");
             telemetry.update();
             // Wait for the game to start (driver presses PLAY)
@@ -49,6 +51,7 @@ public class BaseDrive extends LinearOpMode {
             // run until the end of the match (driver presses STOP)
             while (opModeIsActive()) {
 
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE);
                 if(this.gamepad1.x && this.gamepad1.y && this.gamepad1.b && this.gamepad1.a && max == 1.0){max = 0.3;}
                 else if(this.gamepad1.x && this.gamepad1.y && this.gamepad1.b && this.gamepad1.a){max = 1;}
 

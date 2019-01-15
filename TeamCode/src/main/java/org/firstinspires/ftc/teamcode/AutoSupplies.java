@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -30,6 +31,7 @@ abstract public class AutoSupplies extends LinearOpMode{
     protected DcMotor motorBackLeft;
     protected DcMotor motorBackRight;
     protected Servo mServo;
+    protected RevBlinkinLedDriver lights;
     protected BNO055IMU imu;
     protected Orientation lastAngles = new Orientation();
     //  Establish detector
@@ -295,12 +297,15 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorFwdLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         mServo = hardwareMap.get(Servo.class, "mServo");
+        lights = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
 
         telemetry.addData("Mode", "calibrating...");
         telemetry.update();
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(gyroParameters);
+
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
 
         telemetry.clear();
         telemetry.addData("Status", "Initialized");
