@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 @Autonomous(name="DepotRight", group="Official")
@@ -21,7 +22,7 @@ public class DepotRight extends AutoSupplies{
         double angle = getAngle();
         //  Wait until start
         waitForStart();
-
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
         //locks servo in place
         mServo.setPosition(0.35);
         //moves forward, turns left, then slowly
@@ -53,6 +54,7 @@ public class DepotRight extends AutoSupplies{
             //resets detector
             goldDetector.alignSize = 100.0;
             while(!goldDetector.getAligned() && times > 0 && !isStopRequested()){
+               lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
                x =  goldDetector.getXPosition();
                if(x >= 320) {
                    move(50, 0.3, -0.3);
@@ -67,7 +69,8 @@ public class DepotRight extends AutoSupplies{
                telemetry.update();
             }
             while(goldDetector.getAligned() && times > 0 && !isStopRequested()){
-                goldDetector.alignSize = 400.0;
+               lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
+               goldDetector.alignSize = 400.0;
                move(50,0.5,0.5);
                times -= 50;
                telemetry.addData("Location",goldDetector.getXPosition());
@@ -81,7 +84,7 @@ public class DepotRight extends AutoSupplies{
             telemetry.addData("time", times);
             telemetry.update();
         }
-
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_RAINBOW_PALETTE);
         //moves forward
         move(500, 0.5, 0.5);
 
@@ -147,8 +150,8 @@ public class DepotRight extends AutoSupplies{
         mServo.setPosition(0.7);
         pause(200);
         resetAngle();
-        moveStraight(6500, 0.4);
-
+        moveStraight(4000, 0.4);
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE);
         pause(3000);
         goldDetector.alignSize = 100.0;
 

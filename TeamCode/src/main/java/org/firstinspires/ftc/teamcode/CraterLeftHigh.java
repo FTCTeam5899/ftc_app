@@ -3,6 +3,7 @@ import com.disnodeteam.dogecv.CameraViewDisplay;
 import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
 import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -28,6 +29,7 @@ public class CraterLeftHigh extends AutoSupplies{
         double angle = getAngle();
         //  Wait until start
         waitForStart();
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
         //locks servo in place
         mServo.setPosition(0.35);
         //moves forward, turns left, then slowly
@@ -58,6 +60,7 @@ public class CraterLeftHigh extends AutoSupplies{
             goldDetector.alignSize = 100.0;
             while (!goldDetector.getAligned() && times > 0 && !isStopRequested()) {
                 x = goldDetector.getXPosition();
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
                 if (x >= 320) {
                     move(50, 0.3, -0.3);
                 } else {
@@ -70,6 +73,7 @@ public class CraterLeftHigh extends AutoSupplies{
                 telemetry.update();
             }
             while (goldDetector.getAligned() && times > 0 && !isStopRequested()) {
+                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
                 goldDetector.alignSize = 400.0;
                 move(50, 0.5, 0.5);
                 times -= 50;
@@ -84,7 +88,7 @@ public class CraterLeftHigh extends AutoSupplies{
             telemetry.addData("time", times);
             telemetry.update();
         }
-
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_RAINBOW_PALETTE);
         //moves forward to knock cube off
         move(500, 0.5, 0.5);
         //moves backwards
@@ -139,7 +143,7 @@ public class CraterLeftHigh extends AutoSupplies{
         resetAngle();
         //drives into crater
         moveStraight(6000, 0.7);
-
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE);
 
         //  Turn all motors off and sleep
         motorFwdLeft.setPower(0);

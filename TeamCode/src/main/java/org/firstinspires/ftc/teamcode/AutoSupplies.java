@@ -280,6 +280,7 @@ abstract public class AutoSupplies extends LinearOpMode{
     //  Init all hardware
     public void initForAutonomous()
     {
+
         BNO055IMU.Parameters gyroParameters = new BNO055IMU.Parameters();
 
         gyroParameters.mode                = BNO055IMU.SensorMode.IMU;
@@ -298,6 +299,7 @@ abstract public class AutoSupplies extends LinearOpMode{
 
         mServo = hardwareMap.get(Servo.class, "mServo");
         lights = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
 
         telemetry.addData("Mode", "calibrating...");
         telemetry.update();
@@ -305,7 +307,7 @@ abstract public class AutoSupplies extends LinearOpMode{
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(gyroParameters);
 
-        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLACK);
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
 
         telemetry.clear();
         telemetry.addData("Status", "Initialized");
