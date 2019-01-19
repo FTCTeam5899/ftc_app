@@ -30,6 +30,7 @@ abstract public class AutoSupplies extends LinearOpMode{
     protected DcMotor motorFwdRight;
     protected DcMotor motorBackLeft;
     protected DcMotor motorBackRight;
+    protected DcMotor lift;
     protected Servo mServo;
     protected RevBlinkinLedDriver lights;
     protected BNO055IMU imu;
@@ -292,10 +293,12 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorBackLeft = hardwareMap.get(DcMotor.class, "motorBackLeft");
         motorFwdLeft = hardwareMap.get(DcMotor.class, "motorFwdLeft");
         motorBackRight = hardwareMap.get(DcMotor.class, "motorBackRight");
+        lift = hardwareMap.get(DcMotor.class, "lift");
         motorBackRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorBackLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFwdRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFwdLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         mServo = hardwareMap.get(Servo.class, "mServo");
         lights = hardwareMap.get(RevBlinkinLedDriver.class, "lights");

@@ -20,6 +20,7 @@ public class BaseDrive extends LinearOpMode {
         private DcMotor motorL;
         private DcMotor motorR;
         private DcMotor motorS;
+        private DcMotor lift;
 
         private Servo mServo;
         private RevBlinkinLedDriver lights;
@@ -40,12 +41,14 @@ public class BaseDrive extends LinearOpMode {
             motorL = hardwareMap.get(DcMotor.class, "motorL");
             motorR = hardwareMap.get(DcMotor.class, "motorR");
             motorS = hardwareMap.get(DcMotor.class, "motorS");
+            lift = hardwareMap.get(DcMotor.class, "lift");
 
             mServo = hardwareMap.get(Servo.class, "mServo");
             lights = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
             telemetry.addData("Status", "Initialized");
             telemetry.update();
             // Wait for the game to start (driver presses PLAY)
+            lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
             waitForStart();
 
             // run until the end of the match (driver presses STOP)
@@ -77,7 +80,17 @@ public class BaseDrive extends LinearOpMode {
                 else{
                     motorS.setPower(0);
                 }
-
+                if(this.gamepad1.right_trigger != 0 ^ this.gamepad1.left_trigger != 0){
+                    if(this.gamepad1.right_trigger != 0){
+                        lift.setPower(this.gamepad1.right_trigger);
+                    }
+                    else if(this.gamepad1.left_trigger != 0){
+                        lift.setPower(-this.gamepad1.left_trigger);
+                    }
+                }
+                else{
+                    lift.setPower(0);
+                }
 
 
                 if(this.gamepad1.dpad_up){
