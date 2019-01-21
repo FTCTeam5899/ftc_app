@@ -17,6 +17,7 @@ public class DepotRight extends AutoSupplies{
 
         initForAutonomous();
         double x = 0;
+        double y = 0;
         double times = 0;
         double tTime = 0;
         double angle = getAngle();
@@ -29,65 +30,32 @@ public class DepotRight extends AutoSupplies{
         //turns until is aligned with cube
         move(300,0.4,0.4);
         move(600, -0.3, 0.3);
-        while(!goldDetector.getAligned() && !isStopRequested()){
-            if(goldDetector.isFound()){
-                x =  goldDetector.getXPosition();
-                if(x >= 320) {
-                    move(50, 0.3, -0.3);
+        goldDetector.alignSize = 50.0;
+        while(!goldDetector.getAligned() && !isStopRequested()) {
+            if (goldDetector.isFound() && y <= 380) {
+                x = goldDetector.getXPosition();
+                y = goldDetector.getYPosition();
+                if (x >= 320) {
+                    move(50, 0.2, -0.2);
+                    tTime += 50;
+                } else if (x <= 320) {
+                    move(50, -0.2, 0.2);
                     tTime += 50;
                 }
-                else{
-                    move(50, -0.3, 0.3);
-                    tTime += 50;
-                }
-            }
-            else {
+            } else {
                 move(50, 0.3, -0.3);
                 tTime += 50;
             }
         }
+        sleep(5000);
+        telemetry.addData("x",x);
+        telemetry.addData("y",y);
         goldDetector.alignSize = 640.0;
-        x =  goldDetector.getXPosition();
-        times = 3100;
-        //drives toward cube until it can not be found any longer
-        while(x<630.0 && x>10.0 && goldDetector.isFound() && times > 0 && !isStopRequested()){
-            //resets detector
-            goldDetector.alignSize = 100.0;
-            while(!goldDetector.getAligned() && times > 0 && !isStopRequested()){
-               lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
-               x =  goldDetector.getXPosition();
-               if(x >= 320) {
-                   move(50, 0.3, -0.3);
-               }
-               else{
-                   move(50, -0.3, 0.3);
-               }
-               times -= 50;
-               telemetry.addData("Location", goldDetector.getXPosition());
-               telemetry.addData("Found", goldDetector.isFound());
-               telemetry.addData("time", times);
-               telemetry.update();
-            }
-            while(goldDetector.getAligned() && times > 0 && !isStopRequested()){
-               lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
-               goldDetector.alignSize = 400.0;
-               move(50,0.5,0.5);
-               times -= 50;
-               telemetry.addData("Location",goldDetector.getXPosition());
-               telemetry.addData("Found", goldDetector.isFound());
-               telemetry.addData("time", times);
-               telemetry.update();
-            }
-            goldDetector.alignSize = 640.0;
-            telemetry.addData("Location",goldDetector.getXPosition());
-            telemetry.addData("Found", goldDetector.isFound());
-            telemetry.addData("time", times);
-            telemetry.update();
-        }
+
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_RAINBOW_PALETTE);
         //moves forward
-        move(500, 0.5, 0.5);
-
+        move(1500, 0.5, 0.5);
+        sleep(10000);
         //determines if the cube was left right or center and turns toward the crater
         if(tTime < 700){
             telemetry.addData("Founds", "left" + tTime);
