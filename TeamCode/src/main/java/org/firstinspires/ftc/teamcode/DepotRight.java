@@ -54,7 +54,7 @@ public class DepotRight extends AutoSupplies{
 
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_RAINBOW_PALETTE);
         //moves forward
-        move(1500, 0.5, 0.5);
+        move(1000, 0.5, 0.5);
         sleep(10000);
         //determines if the cube was left right or center and turns toward the crater
         if(tTime < 700){
