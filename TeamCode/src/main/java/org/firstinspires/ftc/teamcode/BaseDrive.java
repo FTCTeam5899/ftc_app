@@ -28,20 +28,17 @@ public class BaseDrive extends LinearOpMode {
         private static double left;
         private static double right;
 
-        private double currentPositionDegrees;
         private double max = 1.0;
 
         //  Neverest 60 motor left spec:  quadrature encoder, 420 pulses per revolution, count = 420 *4
         private static final double COUNTS_PER_MOTOR_REV = 1680;    // Neverest 60 motor encoder
         private static final double DRIVE_GEAR_REDUCTION1 = 27.0;     // This is < 1.0 if geared UP
-        private static final double DEGREES_PER_WHILE_LOOP = 0.4;
         private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;
-        private static double currentPositionDegrees1 = 0.0;
 
         //  Neverest 60 motor right spec:  quadrature encoder, 420 pulses per revolution, count = 420 *4
         private static final double DRIVE_GEAR_REDUCTION2 = 13.5;     // This is < 1.0 if geared UP
         private static final double COUNTS_PER_DEGREE2 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION2) / 360;
-        private static double currentPositionDegrees2 = 0.0;
+
         public int getCountsPerDegree(double degrees, int motorNumber){
             int ans = 0;
             if(motorNumber == 1){
@@ -74,10 +71,11 @@ public class BaseDrive extends LinearOpMode {
             telemetry.update();
 
             //  Set encoder for the relicTilt motor to zero.
-            currentPositionDegrees = 0.0;
             motorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             //  Use the encoder reading to control the motor.
             motorL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             //  Send telemetry message to indicate successful Encoder reset
             telemetry.addData("Encoder", "Starting at %7d counts", motorL.getCurrentPosition());
             telemetry.update();
@@ -106,38 +104,56 @@ public class BaseDrive extends LinearOpMode {
                 motorBackLeft.setPower(left);
                 motorBackRight.setPower(-right);
 
-                //motorL.setPower(this.gamepad2.left_stick_y);
-                motorR.setPower(this.gamepad2.right_stick_y);
-
-
 
                 if(this.gamepad2.a){
                     motorL.setTargetPosition(getCountsPerDegree(0,1));
                     motorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     motorL.setPower(1.0);
+
+                    motorR.setTargetPosition(getCountsPerDegree(0,2));
+                    motorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    motorR.setPower(1.0);
                 }
                 else if(this.gamepad2.x){
                     motorL.setTargetPosition(getCountsPerDegree(-90,1));
                     motorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     motorL.setPower(1.0);
+
+                    motorR.setTargetPosition(getCountsPerDegree(90,2));
+                    motorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    motorR.setPower(1.0);
                 }
                 else if(this.gamepad2.y){
-                    motorL.setTargetPosition(getCountsPerDegree(-180,1));
+                    motorL.setTargetPosition(getCountsPerDegree(-190,1));
                     motorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     motorL.setPower(1.0);
+
+                    motorR.setTargetPosition(getCountsPerDegree(-50,2));
+                    motorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    motorR.setPower(1.0);
                 }
                 else if(this.gamepad2.b){
                     motorL.setTargetPosition(motorL.getCurrentPosition());
                     motorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     motorL.setPower(1.0);
+
+                    motorR.setTargetPosition(motorR.getCurrentPosition());
+                    motorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    motorR.setPower(1.0);
                 }
-                else if(this.gamepad2.left_stick_y != 0){
+                else if(this.gamepad2.left_stick_y != 0 || this.gamepad2.right_stick_y != 0){
                     motorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     motorL.setPower(this.gamepad2.left_stick_y);
+
+                    motorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    motorR.setPower(this.gamepad2.right_stick_y);
                 }
                 else{
                     motorL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     motorL.setPower(0);
+
+                    motorR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    motorR.setPower(0);
                 }
 
 
