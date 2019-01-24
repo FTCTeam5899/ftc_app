@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name="DepotRight", group="Official")
 
@@ -28,6 +29,7 @@ public class DepotRight extends AutoSupplies{
         mServo.setPosition(0.35);
         //moves forward, turns left, then slowly
         //turns until is aligned with cube
+
         move(300,0.4,0.4);
         move(600, -0.3, 0.3);
         goldDetector.alignSize = 50.0;

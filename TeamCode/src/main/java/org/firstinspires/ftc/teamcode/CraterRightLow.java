@@ -25,11 +25,28 @@ public class CraterRightLow extends AutoSupplies{
 
         initForAutonomous();
         double x = 0;
+        double y = 0;
         double times = 0;
         double tTime = 0;
         double angle = getAngle();
         //  Wait until start
         waitForStart();
+        //lowers bot from lander
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIGHT_CHASE_RED);
+        lift.setTargetPosition(18500);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(1);
+        //backs it off the lander and turns
+        while(lift.getCurrentPosition()<=18400 && !isStopRequested()){}
+        pause(200);
+        move(350, -0.6, -0.6);
+        move(500, 0, 0.8);
+
+        turnTo(90, 0.25);
+        resetAngle();
+        lift.setTargetPosition(0);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(1);
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
         //locks servo in place
         mServo.setPosition(0.35);
@@ -37,85 +54,51 @@ public class CraterRightLow extends AutoSupplies{
         //turns until is aligned with cube
         move(300, 0.4, 0.4);
         move(600, -0.3, 0.3);
-        while (!goldDetector.getAligned() && !isStopRequested()) {
-            if (goldDetector.isFound()) {
-                x = goldDetector.getXPosition();
-                if (x >= 320) {
-                    move(50, 0.3, -0.3);
-                    tTime += 50;
-                } else {
-                    move(50, -0.3, 0.3);
-                    tTime += 50;
+        goldDetector.alignSize = 50.0;//283 419
+        while(!isStopRequested()) {
+            x = goldDetector.getXPosition();
+            y = goldDetector.getYPosition();
+            if (goldDetector.isFound() && y>= 340) {
+                if (x >= 320 && !goldDetector.getAligned()) {
+                    setPower(0.24,-0.24);
+                    times = getRuntime();
+                    //while(times >= getRuntime()-50 && !isStopRequested()){}
+                    tTime += 1;
+                } else if (x <= 320 && !goldDetector.getAligned()) {
+                    setPower(-0.24,0.24);
+                    times = getRuntime();
+                    //while(times >= getRuntime()-50 && !isStopRequested()){}
+                    tTime += 1;
+                }
+                else{
+                    break;
                 }
             } else {
-                move(50, 0.3, -0.3);
-                tTime += 50;
+                setPower(0.3,-0.3);
+                times = getRuntime();
+                //while(times >= getRuntime()-50 && !isStopRequested()){}
+                tTime += 1;
             }
         }
+        setPower(0,0);
+        telemetry.addData("x",x);
+        telemetry.addData("y",y);
         goldDetector.alignSize = 640.0;
-        x = goldDetector.getXPosition();
-        times = 3100;
-        //drives toward cube until it can not be found any longer
-        while (x < 630.0 && x > 10.0 && goldDetector.isFound() && times > 0 && !isStopRequested()) {
-            //resets detector
-            goldDetector.alignSize = 100.0;
-            while (!goldDetector.getAligned() && times > 0 && !isStopRequested()) {
-                x = goldDetector.getXPosition();
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
-                if (x >= 320) {
-                    move(50, 0.3, -0.3);
-                } else {
-                    move(50, -0.3, 0.3);
-                }
-                times -= 50;
-                telemetry.addData("Location", goldDetector.getXPosition());
-                telemetry.addData("Found", goldDetector.isFound());
-                telemetry.addData("time", times);
-                telemetry.update();
-            }
-            while (goldDetector.getAligned() && times > 0 && !isStopRequested()) {
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
-                goldDetector.alignSize = 400.0;
-                move(50, 0.5, 0.5);
-                times -= 50;
-                telemetry.addData("Location", goldDetector.getXPosition());
-                telemetry.addData("Found", goldDetector.isFound());
-                telemetry.addData("time", times);
-                telemetry.update();
-            }
-            goldDetector.alignSize = 640.0;
-            telemetry.addData("Location", goldDetector.getXPosition());
-            telemetry.addData("Found", goldDetector.isFound());
-            telemetry.addData("time", times);
-            telemetry.update();
-        }
+
+        telemetry.addData("time", tTime);
+        telemetry.update();
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_RAINBOW_PALETTE);
-        //moves forward to knock cube off
-        move(500, 0.5, 0.5);
+        //moves forward
+        move(1000, 0.5, 0.5);
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_RAINBOW_PALETTE);
         //moves backwards
-        move(600, -0.5, -0.5);
-        if(tTime >= 1200){
-            move(300, -0.5, -0.5);
-        }
-        //turns toward the depot
+        move(750, -0.5, -0.5);
+        //turns toward the depot with 2 statements to ensure accuracy and speed
+        turnTo(90,0.5);
         turnTo(90,0.25);
         //determines if the cube was left right or center and moves straight for the allotted time
-        if (tTime < 700) {
-            telemetry.addData("Founds", "left" + tTime);
-            moveStraight(1100, 0.5);
-        } else if (tTime >= 600 && tTime < 1200) {
-            telemetry.addData("Founds", "Center" + tTime);
-            moveStraight(1325, 0.5);
-        } else if (tTime >= 1200) {
-            telemetry.addData("Founds", "Right" + tTime);
-            moveStraight(1525, 0.5);
-        } else {
-            telemetry.addData("Founds", "Error" + tTime);
-        }
+        moveStraight(1525, 0.5);
         //drives toward wall and turns to face it
-        pause(200);
-        resetAngle();
-        pause(200);
         pause(200);
         resetAngle();
         pause(200);

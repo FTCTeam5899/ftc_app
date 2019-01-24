@@ -48,6 +48,9 @@ abstract public class AutoSupplies extends LinearOpMode{
     protected double r = -0.4;
     protected double globalAngle;
 
+    private static final double COUNTS_PER_MOTOR_REV = 1680;    // Neverest 60 motor encoder
+    private static final double DRIVE_GEAR_REDUCTION1 = 1.0;     // This is < 1.0 if geared UP
+    private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;
     // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
     // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
     // and named "imu".
@@ -299,6 +302,8 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorFwdRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motorFwdLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
         mServo = hardwareMap.get(Servo.class, "mServo");
         lights = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
@@ -309,6 +314,8 @@ abstract public class AutoSupplies extends LinearOpMode{
 
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(gyroParameters);
+
+        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
 

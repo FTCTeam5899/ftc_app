@@ -73,9 +73,11 @@ public class BaseDrive extends LinearOpMode {
             //  Set encoder for the relicTilt motor to zero.
             motorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             motorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             //  Use the encoder reading to control the motor.
             motorL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             //  Send telemetry message to indicate successful Encoder reset
             telemetry.addData("Encoder", "Starting at %7d counts", motorL.getCurrentPosition());
             telemetry.update();
@@ -169,15 +171,29 @@ public class BaseDrive extends LinearOpMode {
                 else{
                     motorS.setPower(0);
                 }
-                if(this.gamepad1.right_trigger != 0 ^ this.gamepad1.left_trigger != 0){
+                if(this.gamepad1.right_trigger != 0 ^ this.gamepad1.left_trigger != 0 ^ this.gamepad1.left_bumper != false ^ this.gamepad1.right_bumper != false){
                     if(this.gamepad1.right_trigger != 0){
-                        lift.setPower(this.gamepad1.right_trigger);
+                        lift.setTargetPosition(18500);
+                        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        lift.setPower(1);
                     }
-                    else if(this.gamepad1.left_trigger != 0){
-                        lift.setPower(-this.gamepad1.left_trigger);
+                    else if(this.gamepad1.left_trigger != 0){//down
+                        lift.setTargetPosition(0);
+                        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        lift.setPower(1);
                     }
+                    else if(this.gamepad1.left_bumper != false){
+                        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        lift.setPower(-1);
+                    }
+                    else if(this.gamepad1.right_bumper != false){
+                        lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        lift.setPower(1);
+                    }
+
                 }
                 else{
+                    lift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                     lift.setPower(0);
                 }
 
@@ -188,7 +204,7 @@ public class BaseDrive extends LinearOpMode {
                 else if(this.gamepad1.dpad_down){
                     mServo.setPosition(mServo.getPosition()-0.01);
                 }
-
+                telemetry.addData("LiftPos", lift.getCurrentPosition());
                 telemetry.addData("Intake Power" , this.gamepad2.right_trigger);
                 telemetry.addData("mServo Pos", mServo.getPosition());
                 telemetry.addData("Status", "Running");
