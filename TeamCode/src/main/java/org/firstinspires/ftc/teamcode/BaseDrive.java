@@ -39,7 +39,7 @@ public class BaseDrive extends LinearOpMode {
         private static final double DRIVE_GEAR_REDUCTION2 = 13.5;     // This is < 1.0 if geared UP
         private static final double COUNTS_PER_DEGREE2 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION2) / 360;
 
-        public int getCountsPerDegree(double degrees, int motorNumber){
+        private int getCountsPerDegree(double degrees, int motorNumber){
             int ans = 0;
             if(motorNumber == 1){
                 ans = (int)(degrees * COUNTS_PER_DEGREE1);
@@ -173,7 +173,7 @@ public class BaseDrive extends LinearOpMode {
                 }
                 if(this.gamepad1.right_trigger != 0 ^ this.gamepad1.left_trigger != 0 ^ this.gamepad1.left_bumper != false ^ this.gamepad1.right_bumper != false){
                     if(this.gamepad1.right_trigger != 0){
-                        lift.setTargetPosition(18500);
+                        lift.setTargetPosition(24250);
                         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         lift.setPower(1);
                     }

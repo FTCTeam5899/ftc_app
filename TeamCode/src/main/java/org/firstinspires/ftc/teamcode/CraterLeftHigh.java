@@ -4,6 +4,7 @@ import com.disnodeteam.dogecv.DogeCV;
 import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
 import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -13,11 +14,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="CraterLeftHigh", group="Official")
-
+@Disabled
 public class CraterLeftHigh extends AutoSupplies{
     @Override
     public void runOpMode() {
-
+        //
+        //
+        //NOT CURRENTLY USING NEW ALIGNER
+        //
+        //
         //  Establish all hardware and initialize camera
         enableGoldDetector();
         telemetry.addData("Status", "DogeCV 2018.0 - Gold Aligner");
@@ -31,7 +36,7 @@ public class CraterLeftHigh extends AutoSupplies{
         waitForStart();
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
         //locks servo in place
-        mServo.setPosition(0.35);
+        mServo.setPosition(0.33);
         //moves forward, turns left, then slowly
         //turns until is aligned with cube
         move(300, 0.4, 0.4);
@@ -111,6 +116,12 @@ public class CraterLeftHigh extends AutoSupplies{
         } else {
             telemetry.addData("Founds", "Error" + tTime);
         }
+
+        //%%%%%%%%
+        //%%%%%%%%
+        //%%%%%%%%
+        //%%%%%%%%
+
         //turns to avoid other partners gold and silver
         pause(200);
         resetAngle();
@@ -138,7 +149,7 @@ public class CraterLeftHigh extends AutoSupplies{
         moveStraight(600, -0.2);
         //moves slightly out of the depot and drops the marker
         moveStraight(400, 0.5);
-        mServo.setPosition(0.7);
+        mServo.setPosition(0.68);
         pause(200);
         resetAngle();
         //drives into crater

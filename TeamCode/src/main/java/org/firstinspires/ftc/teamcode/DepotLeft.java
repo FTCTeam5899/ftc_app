@@ -34,7 +34,7 @@ public class DepotLeft extends AutoSupplies{
         waitForStart();
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
         //locks servo in place
-        mServo.setPosition(0.35);
+        mServo.setPosition(0.33);
         //moves forward, turns left, then slowly
         //turns until is aligned with cube
         move(300,0.4,0.4);
@@ -144,6 +144,13 @@ public class DepotLeft extends AutoSupplies{
             telemetry.addData("Aligner", "Error" + tTime);
         }
 
+
+        //%%%%%%%%
+        //%%%%%%%%
+        //%%%%%%%%
+        //%%%%%%%%
+
+
         resetAngle();
         moveStraight(500, -0.2);
 
@@ -157,7 +164,7 @@ public class DepotLeft extends AutoSupplies{
 
         resetAngle();
         moveStraight(500, 0.3);
-        mServo.setPosition(0.7);
+        mServo.setPosition(0.68);
         pause(200);
         resetAngle();
         moveStraight(4000, 0.4);
