@@ -27,95 +27,76 @@ public class DepotLeft extends AutoSupplies{
 
         initForAutonomous();
         double x = 0;
+        double y = 0;
         double times = 0;
         double tTime = 0;
         double angle = getAngle();
         //  Wait until start
         waitForStart();
-        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
-        //locks servo in place
+        //locks servo on place
         mServo.setPosition(0.33);
+        //lowers bot from lander
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIGHT_CHASE_RED);
+        lift.setTargetPosition(24250);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(1);
+        //backs it off the lander and turns
+        while (lift.getCurrentPosition() <= 24150 && !isStopRequested()) {
+        }
+        pause(200);
+        move(500, -0.6, -0.6);
+        move(500, -0.2, 0.8);
+
+        turnTo(90, 0.5);
+        turnTo(90, 0.25);
+        resetAngle();
+        lift.setTargetPosition(0);
+        lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        lift.setPower(1);
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
+
         //moves forward, turns left, then slowly
         //turns until is aligned with cube
-        move(300,0.4,0.4);
-        move(600, -0.3, 0.3);
-        while(!goldDetector.getAligned() && !isStopRequested()){
-            if(goldDetector.isFound()){
-                x =  goldDetector.getXPosition();
-                if(x >= 320) {
-                    move(50, 0.3, -0.3);
-                    tTime += 50;
-                }
-                else{
-                    move(50, -0.3, 0.3);
-                    tTime += 50;
-                }
-            }
-            else {
-                move(50, 0.3, -0.3);
-                tTime += 50;
-            }
-        }
-        goldDetector.alignSize = 640.0;
-        x =  goldDetector.getXPosition();
-        times = 3100;
-        //drives toward cube until it can not be found any longer
-        while(x<630.0 && x>10.0 && goldDetector.isFound() && times > 0 && !isStopRequested()){
-            //resets detector
-            goldDetector.alignSize = 100.0;
-            while(!goldDetector.getAligned() && times > 0 && !isStopRequested()){
-               x =  goldDetector.getXPosition();
-               lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
-               if(x >= 320) {
-                   move(50, 0.3, -0.3);
-               }
-               else{
-                   move(50, -0.3, 0.3);
-               }
-               times -= 50;
-               telemetry.addData("Location", goldDetector.getXPosition());
-               telemetry.addData("Found", goldDetector.isFound());
-               telemetry.addData("time", times);
-               telemetry.update();
-            }
-            while(goldDetector.getAligned() && times > 0 && !isStopRequested()){
-                lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.GREEN);
-                goldDetector.alignSize = 400.0;
-               move(50,0.5,0.5);
-               times -= 50;
-               telemetry.addData("Location",goldDetector.getXPosition());
-               telemetry.addData("Found", goldDetector.isFound());
-               telemetry.addData("time", times);
-               telemetry.update();
-            }
-            goldDetector.alignSize = 640.0;
-            telemetry.addData("Location",goldDetector.getXPosition());
-            telemetry.addData("Found", goldDetector.isFound());
-            telemetry.addData("time", times);
+        move(300, 0.4, 0.4);
+        move(800, -0.3, 0.3);
+        goldDetector.alignSize = 50.0;//283 419
+        telemetry.clear();
+        while (!isStopRequested()) {
+            x = goldDetector.getXPosition();
+            y = goldDetector.getYPosition();
+            telemetry.addData("x", x);
+            telemetry.addData("y", y);
             telemetry.update();
+            if (goldDetector.isFound() && y >= 340) {
+                telemetry.addData("working", y);
+                telemetry.update();
+                if (x >= 320 && !goldDetector.getAligned()) {
+                    setPower(0.24, -0.24);
+                    tTime += 1;
+                } else if (x <= 320 && !goldDetector.getAligned()) {
+                    setPower(-0.24, 0.24);
+                    tTime += 1;
+                } else {
+                    break;
+                }
+            } else {
+                setPower(0.3, -0.3);
+                tTime += 1;
+            }
         }
+        angle = getAngle();
+        telemetry.clear();
+        setPower(0, 0);
+        telemetry.addData("x", x);
+        telemetry.addData("y", y);
+        goldDetector.alignSize = 640.0;
+
+        telemetry.addData("time", tTime);
+        telemetry.update();
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_RAINBOW_PALETTE);
         //moves forward
-        move(500, 0.5, 0.5);
-
-        //determines if the cube was left right or center and turns toward the crater
-        if(tTime < 700){
-            telemetry.addData("Founds", "left" + tTime);
-            move(600, 0.4, 0);
-        }
-        else if(tTime >= 700 && tTime < 1200){
-            telemetry.addData("Founds", "Center" + tTime);
-        }
-        else if(tTime >= 1200){
-            telemetry.addData("Founds", "Right" + tTime);
-            move(600, 0, 0.4);
-        }
-        else{
-            telemetry.addData("Founds", "Error" + tTime);
-        }
-        //moves forward
-        move(900, 0.5, 0.5);
-        angle = getAngle();
+        move(1900, 0.6, 0.6);
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.COLOR_WAVES_RAINBOW_PALETTE);
         //resets detector
         telemetry.addData("Location", goldDetector.getXPosition());
         telemetry.addData("Found", goldDetector.isFound());
@@ -123,52 +104,46 @@ public class DepotLeft extends AutoSupplies{
         telemetry.update();
 
 
+        if (angle >= 20) {
+            telemetry.addData("left", 0);
+            telemetry.update();
+            turnTo(135, 0.5);
+            turnTo(135, 0.25);
+            moveStraight(1400, -0.5);
 
-        sleep(500);
-
-        turnTo(40,.25);
-
-        pause(500);
-
-        resetAngle();
-        if(tTime < 700){
-            moveStraight(2200, 0.2);
+        } else if (angle <= -20) {
+            telemetry.addData("right", 0);
+            telemetry.update();
+            turnTo(45, 0.5);
+            turnTo(45, 0.25);
+            resetAngle();
+            moveStraight(1400, 0.5);
+            turnTo(83, 0.5);
+            turnTo(83, 0.25);
+        } else {
+            telemetry.addData("center", 0);
+            telemetry.update();
+            turnTo(10, 0.5);
+            turnTo(10, 0.25);
+            move(600, 0.5, 0.5);
+            turnTo(145, 0.5);
+            turnTo(145, 0.25);
+            moveStraight(600, -0.5);
+            resetAngle();
+            turnTo(-20, 0.6);
+            turnTo(-22, 0.25);
         }
-        else if(tTime >= 700 && tTime < 1200){
-            moveStraight(2600, 0.2);
-        }
-        else if(tTime >= 1200){
-            moveStraight(3000, 0.2);
-        }
-        else{
-            telemetry.addData("Aligner", "Error" + tTime);
-        }
-
-
-        //%%%%%%%%
-        //%%%%%%%%
-        //%%%%%%%%
-        //%%%%%%%%
 
 
         resetAngle();
-        moveStraight(500, -0.2);
-
-        pause(200);
-
-        resetAngle();
-        turnTo(80,.25);
-
-        resetAngle();
-        moveStraight(4000, -0.2);
-
-        resetAngle();
-        moveStraight(500, 0.3);
         mServo.setPosition(0.68);
-        pause(200);
         resetAngle();
-        moveStraight(4000, 0.4);
-        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE);
+        turnTo(-1, 0.6);
+        move(2500, 1, 1);
+        if (angle >= 20) {
+            move(700, 0.5, 0);
+        }
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIGHT_CHASE_RED);
         pause(3000);
         goldDetector.alignSize = 100.0;
 
@@ -178,6 +153,7 @@ public class DepotLeft extends AutoSupplies{
         motorBackLeft.setPower(0);
         motorBackRight.setPower(0);
         sleep(1000);
+
     }
 
 }

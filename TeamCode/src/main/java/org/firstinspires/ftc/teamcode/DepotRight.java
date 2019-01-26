@@ -75,6 +75,7 @@ public class DepotRight extends AutoSupplies{
                 tTime += 1;
             }
         }
+        angle = getAngle();
         telemetry.clear();
         setPower(0,0);
         telemetry.addData("x",x);
@@ -94,33 +95,45 @@ public class DepotRight extends AutoSupplies{
         telemetry.update();
 
 
+        if(angle >= 20){
+            telemetry.addData("left",0);
+            telemetry.update();
+            turnTo(-45,0.5);
+            turnTo(-45,0.25);
+            resetAngle();
+            moveStraight(1400,0.5);
+            turnTo(-83,0.5);
+            turnTo(-83,0.25);
 
-        sleep(500);
+        }
+        else if(angle <= -20){
+            telemetry.addData("right",0);
+            telemetry.update();
+            turnTo(-135,0.5);
+            turnTo(-135,0.25);
+            moveStraight(1400,-0.5);
+        }
+        else{
+            telemetry.addData("center", 0);
+            telemetry.update();
+            moveStraight(200, -0.5);
+            turnTo(-145,0.5);
+            turnTo(-145,0.25);
+            moveStraight(600,-0.5);
+            resetAngle();
+            turnTo(20, 0.6);
+            turnTo(22, 0.25);
+        }
 
-        turnTo(-40, .5);
-        turnTo(-40,.25);
-        moveStraight(800, 0.5);
-
-        //%%%%%%%%
-        //%%%%%%%%
-        //%%%%%%%%
-        //%%%%%%%%
-
-        resetAngle();
-        moveStraight(200, -0.5);
-
-        pause(200);
-
-        resetAngle();
-        turnTo(-90,.5);
-        turnTo(-90,.25);
-
-        resetAngle();
-        moveStraight(700, -0.6);
 
         resetAngle();
         mServo.setPosition(0.68);
-        moveStraight(2000, 1);
+        resetAngle();
+        turnTo(1,0.6);
+        move(2500, 1,1);
+        if(angle <= -20){
+            move(700, 0, 0.5);
+        }
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIGHT_CHASE_RED);
         pause(3000);
         goldDetector.alignSize = 100.0;
