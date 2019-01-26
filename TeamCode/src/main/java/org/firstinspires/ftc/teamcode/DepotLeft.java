@@ -125,10 +125,10 @@ public class DepotLeft extends AutoSupplies{
             telemetry.update();
             turnTo(10, 0.5);
             turnTo(10, 0.25);
-            move(600, 0.5, 0.5);
+            move(800, 0.5, 0.5);
             turnTo(145, 0.5);
             turnTo(145, 0.25);
-            moveStraight(600, -0.5);
+            //moveStraight(600, -0.5);
             resetAngle();
             turnTo(-20, 0.6);
             turnTo(-22, 0.25);
