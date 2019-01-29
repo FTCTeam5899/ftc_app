@@ -35,16 +35,16 @@ public class CraterRightLow extends AutoSupplies{
         mServo.setPosition(0.33);
         //lowers bot from lander
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIGHT_CHASE_RED);
-        lift.setTargetPosition(24250);
+        lift.setTargetPosition(-15825);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lift.setPower(1);
         //backs it off the lander and turns
-        while(lift.getCurrentPosition()<=24150 && !isStopRequested()){}
+        while(lift.getCurrentPosition()>=-15775 && !isStopRequested()){}
         pause(200);
         move(400, -0.6, -0.6);
         move(500, -0.2, 0.8);
 
-        turnTo(90, 0.5);
+        turnTo(90, 0.7);
         turnTo(90,0.25);
         resetAngle();
         lift.setTargetPosition(0);

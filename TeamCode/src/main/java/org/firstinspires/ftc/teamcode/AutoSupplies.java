@@ -48,9 +48,10 @@ abstract public class AutoSupplies extends LinearOpMode{
     protected double r = -0.4;
     protected double globalAngle;
 
-    private static final double COUNTS_PER_MOTOR_REV = 1680;    // Neverest 60 motor encoder
-    private static final double DRIVE_GEAR_REDUCTION1 = 1.0;     // This is < 1.0 if geared UP
-    private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;
+    //  Neverest 40 motor spec:  quadrature encoder, 1120 pulses per revolution, count = 280 *4
+    private static final double COUNTS_PER_MOTOR_REV = 1120;    // Neverest 40 motor encoder
+    private static final double DRIVE_GEAR_REDUCTION1 = 27.0;     // This is < 1.0 if geared UP
+    private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;;
     // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
     // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
     // and named "imu".

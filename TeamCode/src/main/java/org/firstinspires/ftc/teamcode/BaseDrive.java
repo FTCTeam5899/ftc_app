@@ -30,14 +30,20 @@ public class BaseDrive extends LinearOpMode {
 
         private double max = 1.0;
 
-        //  Neverest 60 motor left spec:  quadrature encoder, 420 pulses per revolution, count = 420 *4
-        private static final double COUNTS_PER_MOTOR_REV = 1680;    // Neverest 60 motor encoder
+        //  Neverest 40 motor spec:  quadrature encoder, 1120 pulses per revolution, count = 280 *4
+        private static final double COUNTS_PER_MOTOR_REV = 1120;    // Neverest 40 motor encoder
         private static final double DRIVE_GEAR_REDUCTION1 = 27.0;     // This is < 1.0 if geared UP
         private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;
 
+        //  Neverest 60 motor left spec:  quadrature encoder, 420 pulses per revolution, count = 420 *4
+        //private static final double COUNTS_PER_MOTOR_REV = 1680;    // Neverest 60 motor encoder
+        //private static final double DRIVE_GEAR_REDUCTION1 = 27.0;     // This is < 1.0 if geared UP
+        //private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;
+
         //  Neverest 60 motor right spec:  quadrature encoder, 420 pulses per revolution, count = 420 *4
+        private static final double COUNTS_PER_MOTOR_REV2 = 1680;    // Neverest 60 motor encoder
         private static final double DRIVE_GEAR_REDUCTION2 = 13.5;     // This is < 1.0 if geared UP
-        private static final double COUNTS_PER_DEGREE2 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION2) / 360;
+        private static final double COUNTS_PER_DEGREE2 = (COUNTS_PER_MOTOR_REV2 * DRIVE_GEAR_REDUCTION2) / 360;
 
         private int getCountsPerDegree(double degrees, int motorNumber){
             int ans = 0;
@@ -173,7 +179,7 @@ public class BaseDrive extends LinearOpMode {
                 }
                 if(this.gamepad1.right_trigger != 0 ^ this.gamepad1.left_trigger != 0 ^ this.gamepad1.left_bumper != false ^ this.gamepad1.right_bumper != false){
                     if(this.gamepad1.right_trigger != 0){
-                        lift.setTargetPosition(24250);
+                        lift.setTargetPosition(-15825);
                         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         lift.setPower(1);
                     }
