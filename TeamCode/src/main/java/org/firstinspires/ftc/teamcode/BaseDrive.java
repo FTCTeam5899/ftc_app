@@ -30,7 +30,7 @@ public class BaseDrive extends LinearOpMode {
 
         private double max = 1.0;
 
-        //  Neverest 40 motor spec:  quadrature encoder, 1120 pulses per revolution, count = 280 *4
+        //  Neverest 40 motor spec:  quadrature encoder, 280 pulses per revolution, count = 280 *4
         private static final double COUNTS_PER_MOTOR_REV = 1120;    // Neverest 40 motor encoder
         private static final double DRIVE_GEAR_REDUCTION1 = 27.0;     // This is < 1.0 if geared UP
         private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;
@@ -40,8 +40,8 @@ public class BaseDrive extends LinearOpMode {
         //private static final double DRIVE_GEAR_REDUCTION1 = 27.0;     // This is < 1.0 if geared UP
         //private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;
 
-        //  Neverest 60 motor right spec:  quadrature encoder, 420 pulses per revolution, count = 420 *4
-        private static final double COUNTS_PER_MOTOR_REV2 = 1680;    // Neverest 60 motor encoder
+        //  Neverest 40 motor right spec:  quadrature encoder, 280 pulses per revolution, count = 280 *4
+        private static final double COUNTS_PER_MOTOR_REV2 = 1120;    // Neverest 60 motor encoder
         private static final double DRIVE_GEAR_REDUCTION2 = 13.5;     // This is < 1.0 if geared UP
         private static final double COUNTS_PER_DEGREE2 = (COUNTS_PER_MOTOR_REV2 * DRIVE_GEAR_REDUCTION2) / 360;
 
@@ -211,6 +211,8 @@ public class BaseDrive extends LinearOpMode {
                     mServo.setPosition(mServo.getPosition()-0.01);
                 }
                 telemetry.addData("LiftPos", lift.getCurrentPosition());
+                telemetry.addData("motorR", motorR.getCurrentPosition());
+                telemetry.addData("motorL", motorL.getCurrentPosition());
                 telemetry.addData("Intake Power" , this.gamepad2.right_trigger);
                 telemetry.addData("mServo Pos", mServo.getPosition());
                 telemetry.addData("Status", "Running");
