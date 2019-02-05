@@ -123,15 +123,15 @@ public class DepotLeft extends AutoSupplies{
         } else {
             telemetry.addData("center", 0);
             telemetry.update();
-            turnTo(10, 0.5);
-            turnTo(10, 0.25);
+            turnTo(70, 0.5);
+            turnTo(70, 0.25);
             move(800, 0.5, 0.5);
             turnTo(145, 0.5);
             turnTo(145, 0.25);
             //moveStraight(600, -0.5);
             resetAngle();
-            turnTo(-20, 0.6);
-            turnTo(-22, 0.25);//lessen this angle
+            turnTo(-13, 0.6);
+            turnTo(-15, 0.25);
         }
 
 
