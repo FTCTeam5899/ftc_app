@@ -28,11 +28,11 @@ public class DepotRight extends AutoSupplies{
         mServo.setPosition(0.33);
         //lowers bot from lander
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIGHT_CHASE_RED);
-        lift.setTargetPosition(-15825);
+        lift.setTargetPosition(18250);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lift.setPower(1);
         //backs it off the lander and turns
-        while(lift.getCurrentPosition()>=-15775 && !isStopRequested()){}
+        while(lift.getCurrentPosition()<=18250 && !isStopRequested()){}
         pause(200);
         move(500, -0.6, -0.6);
         move(500, -0.2, 0.8);

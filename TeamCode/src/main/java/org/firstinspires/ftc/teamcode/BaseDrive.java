@@ -41,7 +41,7 @@ public class BaseDrive extends LinearOpMode {
         //private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;
 
         //  Neverest 40 motor right spec:  quadrature encoder, 280 pulses per revolution, count = 280 *4
-        private static final double COUNTS_PER_MOTOR_REV2 = 1120;    // Neverest 60 motor encoder
+        private static final double COUNTS_PER_MOTOR_REV2 = 1120;    // Neverest 40 motor encoder
         private static final double DRIVE_GEAR_REDUCTION2 = 13.5;     // This is < 1.0 if geared UP
         private static final double COUNTS_PER_DEGREE2 = (COUNTS_PER_MOTOR_REV2 * DRIVE_GEAR_REDUCTION2) / 360;
 
@@ -132,11 +132,11 @@ public class BaseDrive extends LinearOpMode {
                     motorR.setPower(1.0);
                 }
                 else if(this.gamepad2.y){
-                    motorL.setTargetPosition(getCountsPerDegree(-190,1));
+                    motorL.setTargetPosition(getCountsPerDegree(-171,1));
                     motorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     motorL.setPower(1.0);
 
-                    motorR.setTargetPosition(getCountsPerDegree(-50,2));
+                    motorR.setTargetPosition(getCountsPerDegree(-53,2));
                     motorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     motorR.setPower(1.0);
                 }
@@ -167,11 +167,11 @@ public class BaseDrive extends LinearOpMode {
 
 
                 if(this.gamepad2.right_trigger != 0 ^ this.gamepad2.left_trigger != 0){
-                    if(this.gamepad2.right_trigger != 0){
-                        motorS.setPower(this.gamepad2.right_trigger);
+                    if(this.gamepad2.left_trigger != 0){
+                        motorS.setPower(this.gamepad2.left_trigger);
                     }
-                    else if(this.gamepad2.left_trigger != 0){
-                        motorS.setPower(-this.gamepad2.left_trigger);
+                    else if(this.gamepad2.right_trigger != 0){
+                        motorS.setPower(-this.gamepad2.right_trigger);
                     }
                 }
                 else{
@@ -179,7 +179,7 @@ public class BaseDrive extends LinearOpMode {
                 }
                 if(this.gamepad1.right_trigger != 0 ^ this.gamepad1.left_trigger != 0 ^ this.gamepad1.left_bumper != false ^ this.gamepad1.right_bumper != false){
                     if(this.gamepad1.right_trigger != 0){
-                        lift.setTargetPosition(-15825);
+                        lift.setTargetPosition(18250);
                         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         lift.setPower(1);
                     }
@@ -211,8 +211,8 @@ public class BaseDrive extends LinearOpMode {
                     mServo.setPosition(mServo.getPosition()-0.01);
                 }
                 telemetry.addData("LiftPos", lift.getCurrentPosition());
-                telemetry.addData("motorR", motorR.getCurrentPosition());
-                telemetry.addData("motorL", motorL.getCurrentPosition());
+                telemetry.addData("motorR", motorR.getCurrentPosition()/COUNTS_PER_DEGREE2);
+                telemetry.addData("motorL", motorL.getCurrentPosition()/COUNTS_PER_DEGREE1);
                 telemetry.addData("Intake Power" , this.gamepad2.right_trigger);
                 telemetry.addData("mServo Pos", mServo.getPosition());
                 telemetry.addData("Status", "Running");
