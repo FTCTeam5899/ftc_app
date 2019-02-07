@@ -67,7 +67,7 @@ public class DepotLeft extends AutoSupplies{
             telemetry.addData("x", x);
             telemetry.addData("y", y);
             telemetry.update();
-            if (goldDetector.isFound() && y >= 340) {
+            if (goldDetector.isFound() && y >= 300) {
                 telemetry.addData("working", y);
                 telemetry.update();
                 if (x >= 320 && !goldDetector.getAligned()) {
@@ -111,13 +111,13 @@ public class DepotLeft extends AutoSupplies{
             turnTo(135, 0.25);
             moveStraight(1400, -0.5);
 
-        } else if (angle <= -20) {
+        } else if (angle <= -20) {//testing
             telemetry.addData("right", 0);
             telemetry.update();
             turnTo(45, 0.5);
             turnTo(45, 0.25);
             resetAngle();
-            moveStraight(1400, 0.5);
+            moveStraight(1700, 0.5);
             turnTo(83, 0.5);
             turnTo(83, 0.25);
         } else {
@@ -130,8 +130,8 @@ public class DepotLeft extends AutoSupplies{
             turnTo(145, 0.25);
             //moveStraight(600, -0.5);
             resetAngle();
-            turnTo(-13, 0.6);
-            turnTo(-15, 0.25);
+            turnTo(-10, 0.6);
+            turnTo(-11, 0.25);//not yet tested
         }
 
 

@@ -133,7 +133,7 @@ public class BaseDrive extends LinearOpMode {
                     motorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     motorL.setPower(1.0);
 
-                    motorR.setTargetPosition(getCountsPerDegree(90,2));
+                    motorR.setTargetPosition(getCountsPerDegree(65,2));
                     motorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     motorR.setPower(1.0);
                 }
