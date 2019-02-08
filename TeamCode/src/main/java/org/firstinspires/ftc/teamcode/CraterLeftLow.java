@@ -1,21 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.disnodeteam.dogecv.CameraViewDisplay;
-import com.disnodeteam.dogecv.DogeCV;
-import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
-import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="CraterRightLow", group="Official")
+@Autonomous(name="CraterLeftLow", group="Official")
 
-public class CraterRightLow extends AutoSupplies{
+public class CraterLeftLow extends AutoSupplies{
     @Override
     public void runOpMode() {
 
@@ -123,13 +114,16 @@ public class CraterRightLow extends AutoSupplies{
         pause(100);
         turnTo(-87,0.5);
         turnTo(-88,0.25);
-        moveStraight(1600, -1.0);
+        moveStraight(2300, -1.0);
         //drops the team marker, and moves to the crater
+        resetAngle();
+        turnTo(-90, 0.5);
+        turnTo(-90, 0.25);
         mServo.setPosition(0.68);
         resetAngle();
         //drives into crater
-        turnTo(1,0.6);
-        move(3000, 1.0, 1.0);
+        turnTo(-1,1.0);
+        move(3600, 1.0, 1.0);
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE);
 
 

@@ -118,8 +118,8 @@ public class DepotLeft extends AutoSupplies{
             turnTo(45, 0.25);
             resetAngle();
             moveStraight(1700, 0.5);
-            turnTo(83, 0.5);
-            turnTo(83, 0.25);
+            turnTo(92, 0.5);
+            turnTo(92, 0.25);
         } else {
             telemetry.addData("center", 0);
             telemetry.update();
@@ -131,17 +131,20 @@ public class DepotLeft extends AutoSupplies{
             //moveStraight(600, -0.5);
             resetAngle();
             turnTo(-10, 0.6);
-            turnTo(-11, 0.25);//not yet tested
+            turnTo(-11, 0.25);
         }
 
 
         resetAngle();
         mServo.setPosition(0.68);
         resetAngle();
-        turnTo(-1, 0.6);
+        if(angle <= 10){turnTo(-1, 0.6);}
         move(2500, 1, 1);
         if (angle >= 20) {
-            move(700, 0.5, 0);
+            move(3000, 0.5, 0);
+        }
+        if (angle <= 20){
+            move(700, 0.5, 0.5);
         }
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIGHT_CHASE_RED);
         pause(3000);
