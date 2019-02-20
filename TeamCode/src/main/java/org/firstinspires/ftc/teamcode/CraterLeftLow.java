@@ -55,7 +55,7 @@ public class CraterLeftLow extends AutoSupplies{
             telemetry.addData("x",x);
             telemetry.addData("y",y);
             telemetry.update();
-            if (goldDetector.isFound() && y>= 340) {
+            if (goldDetector.isFound() && y>= 330) {
                 telemetry.addData("working",y);
                 telemetry.update();
                 if (x >= 320 && !goldDetector.getAligned()) {

@@ -64,7 +64,7 @@ public class CraterRightLow extends AutoSupplies{
             telemetry.addData("x",x);
             telemetry.addData("y",y);
             telemetry.update();
-            if (goldDetector.isFound() && y>= 340) {
+            if (goldDetector.isFound() && y>= 330) {
                 telemetry.addData("working",y);
                 telemetry.update();
                 if (x >= 320 && !goldDetector.getAligned()) {
@@ -129,7 +129,7 @@ public class CraterRightLow extends AutoSupplies{
         resetAngle();
         //drives into crater
         turnTo(1,0.6);
-        move(3000, 1.0, 1.0);
+        move(2600, 1.0, 1.0);
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE);
 
 
