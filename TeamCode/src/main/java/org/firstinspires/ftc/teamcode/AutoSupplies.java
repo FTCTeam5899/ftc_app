@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -19,6 +20,7 @@ import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
@@ -32,9 +34,11 @@ abstract public class AutoSupplies extends LinearOpMode{
     protected DcMotor motorBackRight;
     protected DcMotor lift;
     protected Servo mServo;
+    protected Rev2mDistanceSensor distanceSensor;
     protected RevBlinkinLedDriver lights;
     protected BNO055IMU imu;
     protected Orientation lastAngles = new Orientation();
+    protected Orientation lastPitches = new Orientation();
     //  Establish detector
     protected GoldAlignDetector goldDetector;
     protected SamplingOrderDetector orderDetector;
@@ -47,6 +51,7 @@ abstract public class AutoSupplies extends LinearOpMode{
     protected double l = 0.4;
     protected double r = -0.4;
     protected double globalAngle;
+    protected double globalPitch;
 
     //  Neverest 40 motor spec:  quadrature encoder, 1120 pulses per revolution, count = 280 *4
     private static final double COUNTS_PER_MOTOR_REV = 1120;    // Neverest 40 motor encoder
@@ -209,6 +214,12 @@ abstract public class AutoSupplies extends LinearOpMode{
 
         globalAngle = 0;
     }
+    public void resetPitch()
+    {
+        lastPitches = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        globalPitch = 0;
+    }
 
     /**
      * Get current cumulative angle rotation from last reset.
@@ -236,6 +247,30 @@ abstract public class AutoSupplies extends LinearOpMode{
 
         return globalAngle;
     }
+
+    public double getPitch()
+    {
+        // We experimentally determined the Z axis is the axis we want to use for heading angle.
+        // We have to process the angle because the imu works in euler angles so the Z axis is
+        // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
+        // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
+
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        double deltaAngle = angles.secondAngle - lastPitches.secondAngle;
+
+        if (deltaAngle < -180)
+            deltaAngle += 360;
+        else if (deltaAngle > 180)
+            deltaAngle -= 360;
+
+        globalPitch += deltaAngle;
+
+        lastPitches = angles;
+
+        return globalPitch;
+    }
+
 
     //drives the robot in a straight line using the gyro sensor
     public void moveStraight(long millis, double power){
@@ -281,6 +316,17 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorFwdRight.setPower(0);
 
     }
+    public void distanceAlign(){
+        motorBackLeft.setPower(-0.4);
+        motorFwdLeft.setPower(0.4);
+        motorBackRight.setPower(0.4);
+        motorFwdRight.setPower(-0.4);
+        while(distanceSensor.getDistance(DistanceUnit.CM)>5);
+        motorBackLeft.setPower(0);
+        motorFwdLeft.setPower(0);
+        motorBackRight.setPower(0);
+        motorFwdRight.setPower(0);
+    }
 
     //  Init all hardware
     public void initForAutonomous()
@@ -307,6 +353,7 @@ abstract public class AutoSupplies extends LinearOpMode{
 
 
         mServo = hardwareMap.get(Servo.class, "mServo");
+        distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "distanceSensor");
         lights = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
 

@@ -1,22 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.disnodeteam.dogecv.CameraViewDisplay;
-import com.disnodeteam.dogecv.DogeCV;
-import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
-import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="CraterRightLow", group="Official")
-@Disabled
-public class CraterRightLow extends AutoSupplies{
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+@Autonomous(name="CraterRightLow_Sensors", group="Official")
+
+public class CraterRightLow_Distance extends AutoSupplies{
     @Override
     public void runOpMode() {
 
@@ -41,6 +34,8 @@ public class CraterRightLow extends AutoSupplies{
         lift.setPower(1);
         //backs it off the lander and turns
         while(lift.getCurrentPosition() <=18150 && !isStopRequested()){}
+        pause(50);
+        resetPitch();
         pause(200);
         move(400, -0.6, -0.6);
         move(500, -0.2, 0.8);
@@ -129,11 +124,33 @@ public class CraterRightLow extends AutoSupplies{
         mServo.setPosition(0.68);
         resetAngle();
         //drives into crater
-        turnTo(1,0.6);
-        move(2600, 1.0, 1.0);
+        //turnTo(1,0.6);                                                      **This is not Tested**
+        //                                                              **Add pause for testing distance**
+        telemetry.clear();
+        while(getPitch() < 4.0 && getPitch() > -4.0){
+            telemetry.addData("Pitch",getPitch());
+            telemetry.update();
+            if(distanceSensor.getDistance(DistanceUnit.CM)<9){
+                motorFwdLeft.setPower(0.8);
+                motorFwdRight.setPower(-0.7);
+                motorBackLeft.setPower(-0.8);
+                motorBackRight.setPower(0.7);
+            }
+            else if(distanceSensor.getDistance(DistanceUnit.CM)>11){
+                motorFwdLeft.setPower(0.7);
+                motorFwdRight.setPower(-0.8);
+                motorBackLeft.setPower(-0.7);
+                motorBackRight.setPower(0.8);
+            }
+            else{
+                motorFwdLeft.setPower(0.8);
+                motorFwdRight.setPower(-0.8);
+                motorBackLeft.setPower(-0.8);
+                motorBackRight.setPower(0.8);
+            }
+
+        }
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE);
-
-
 
         //  Turn all motors off and sleep
         motorFwdLeft.setPower(0);

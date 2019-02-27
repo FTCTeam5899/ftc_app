@@ -9,6 +9,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 
 @TeleOp
 public class BaseDrive extends LinearOpMode {
@@ -21,6 +25,7 @@ public class BaseDrive extends LinearOpMode {
         private DcMotor motorR;
         private DcMotor motorS;
         private DcMotor lift;
+        protected Rev2mDistanceSensor distanceSensor;
 
         private Servo mServo;
         private RevBlinkinLedDriver lights;
@@ -75,6 +80,7 @@ public class BaseDrive extends LinearOpMode {
             lift = hardwareMap.get(DcMotor.class, "lift");
 
             mServo = hardwareMap.get(Servo.class, "mServo");
+            distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "distanceSensor");
             lights = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
             telemetry.addData("Status", "Initialized");
             telemetry.update();
@@ -138,11 +144,11 @@ public class BaseDrive extends LinearOpMode {
                     motorR.setPower(1.0);
                 }
                 else if(this.gamepad2.y){//collecting
-                    motorL.setTargetPosition(getCountsPerDegree(-171,1));
+                    motorL.setTargetPosition(getCountsPerDegree(-187,1));
                     motorL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     motorL.setPower(1.0);
 
-                    motorR.setTargetPosition(getCountsPerDegree(-53,2));
+                    motorR.setTargetPosition(getCountsPerDegree(-44,2));
                     motorR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     motorR.setPower(1.0);
                 }
@@ -237,6 +243,7 @@ public class BaseDrive extends LinearOpMode {
                 telemetry.addData("motorL", motorL.getCurrentPosition()/COUNTS_PER_DEGREE1);
                 telemetry.addData("Intake Power" , this.gamepad2.right_trigger);
                 telemetry.addData("mServo Pos", mServo.getPosition());
+                telemetry.addData("distance", distanceSensor.getDistance(DistanceUnit.CM));
                 telemetry.addData("Status", "Running");
                 telemetry.update();
 
