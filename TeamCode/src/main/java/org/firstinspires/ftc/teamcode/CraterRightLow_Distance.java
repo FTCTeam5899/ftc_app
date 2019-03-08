@@ -22,7 +22,10 @@ public class CraterRightLow_Distance extends AutoSupplies{
         double y = 0;
         double times = 0;
         double tTime = 0;
+        double left = 0.6;
+        double right = 0.6;
         double angle = getAngle();
+        double currentDistance = 0;
         //  Wait until start
         waitForStart();
         //locks servo on place
@@ -124,31 +127,38 @@ public class CraterRightLow_Distance extends AutoSupplies{
         mServo.setPosition(0.68);
         resetAngle();
         //drives into crater
-        //turnTo(1,0.6);                                                      **This is not Tested**
+        //turnTo(1,0.6);//                                        **This is not Tested** change 95 to 85
         //                                                              **Add pause for testing distance**
         telemetry.clear();
-        while(getPitch() < 4.0 && getPitch() > -4.0){
+        while(getPitch() < 4.0 && getPitch() > -4.0 && !isStopRequested()){
             telemetry.addData("Pitch",getPitch());
+            currentDistance = distanceSensor.getDistance(DistanceUnit.CM);
+            if(getAngle() > 25) {//need to test far turn scanner and fixer
+                turnTo(0, 0.5);
+            }
+            else if(getAngle() < -25){
+                turnTo(0,0.5);
+            }
+            else {
+                if (currentDistance < 9) {
+                    left = 0.6;
+                    right = right * 0.95;
+                } else if (currentDistance > 11) {
+                    left = left * 0.95;
+                    right = 0.6;
+                } else {
+                    left = 0.6;
+                    right = 0.6;
+                }
+                motorFwdLeft.setPower(left);
+                motorFwdRight.setPower(-right);
+                motorBackLeft.setPower(-left);
+                motorBackRight.setPower(right);
+            }
+            telemetry.addData("Left", left);
+            telemetry.addData("Right", right);
+            telemetry.addData("Distance", currentDistance);
             telemetry.update();
-            if(distanceSensor.getDistance(DistanceUnit.CM)<9){
-                motorFwdLeft.setPower(0.8);
-                motorFwdRight.setPower(-0.7);
-                motorBackLeft.setPower(-0.8);
-                motorBackRight.setPower(0.7);
-            }
-            else if(distanceSensor.getDistance(DistanceUnit.CM)>11){
-                motorFwdLeft.setPower(0.7);
-                motorFwdRight.setPower(-0.8);
-                motorBackLeft.setPower(-0.7);
-                motorBackRight.setPower(0.8);
-            }
-            else{
-                motorFwdLeft.setPower(0.8);
-                motorFwdRight.setPower(-0.8);
-                motorBackLeft.setPower(-0.8);
-                motorBackRight.setPower(0.8);
-            }
-
         }
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE);
 
