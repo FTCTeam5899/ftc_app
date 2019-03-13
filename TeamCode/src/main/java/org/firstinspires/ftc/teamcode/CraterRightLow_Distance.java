@@ -142,9 +142,9 @@ public class CraterRightLow_Distance extends AutoSupplies{
             else {
                 if (currentDistance < 9) {
                     left = 0.6;
-                    right = right * 0.95;
+                    right = right * 0.9;//new addition of this being at 0.9 instead of 0.95
                 } else if (currentDistance > 11) {
-                    left = left * 0.95;
+                    left = left * 0.9;//new addition of this being at 0.9 instead of 0.95
                     right = 0.6;
                 } else {
                     left = 0.6;

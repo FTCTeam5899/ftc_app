@@ -82,7 +82,7 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorBackRight.setPower(0);
     }
 
-    //sets motors power
+    //sets motors power to a certain value
     public void setPower(double leftPow, double rightPow) {
         l = leftPow;
         r = rightPow;
@@ -92,7 +92,7 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorBackRight.setPower(r);
     }
 
-    //turns on camera and starts gold detector
+    //turns on camera and starts gold detector so it can be used to find the x and y location of the gold
     public void enableGoldDetector(){
         goldDetector = new GoldAlignDetector();
         goldDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
@@ -109,7 +109,9 @@ abstract public class AutoSupplies extends LinearOpMode{
         goldDetector.enable();
     }
 
-    //turns on camera and starts order detector
+    //turns on camera and starts order detector - scans for both of the silver and the gold at the same time and returns
+    //                                            the location of the gold relative to the two silver
+    //### not currently used
     public void enableOrderDetector(){
         orderDetector = new SamplingOrderDetector();
         orderDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
@@ -128,14 +130,18 @@ abstract public class AutoSupplies extends LinearOpMode{
         orderDetector.enable();
     }
 
-    //  Pause for a specified time (time: mili secs)
+    //  Pause for the specified amount of time (time: mili secs)
     public void pause(long millis){
         runtime.reset();
         while (opModeIsActive() && runtime.milliseconds() <= millis){
 
         }
     }
-    //Turns Robot a certain number of degrees
+    //Using the gyroscope, when a degree is passed both left and right motors move accordingly in
+    //order to turn the robot to the right or left until the bearing is equal to or greater than the
+    //specified degree. Power can also be specified. It acts like a turnTo() with a built in
+    //resetAngle function. Cannot be used without resetting the angle.
+    //used commonly in pairs(one fast for speed and one slow for accuracy) to improve movement time.
     public void turn(int degrees, double power){
         int left = 1;
         int right = 1;
@@ -169,7 +175,10 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorFwdRight.setPower(0);
     }
 
-    // turns the robot to a set angle
+    //Using the gyroscope, when a degree is passed both left and right motors move accordingly in
+    //order to turn the robot to the right or left until the bearing is equal to or greater than the
+    //specified degree. Power can also be specified.
+    //used commonly in pairs(one fast for speed and one slow for accuracy) to improve movement time.
     public void turnTo(int degrees, double power){
         int left = 1;
         int right = 1;
@@ -207,13 +216,16 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorBackRight.setPower(0);
         motorFwdRight.setPower(0);
     }
-    //Resets gyro sensor to 0
+    //Resets gyro sensor bearing value to 0
+    //commonly used to calibrate before a match as well
     public void resetAngle()
     {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         globalAngle = 0;
     }
+    //Resets gyro sensor pitch value to 0
+    //commonly used to calibrate before a match as well
     public void resetPitch()
     {
         lastPitches = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -225,6 +237,7 @@ abstract public class AutoSupplies extends LinearOpMode{
      * Get current cumulative angle rotation from last reset.
      * @return Angle in degrees. + = left, - = right.
      */
+    //uses the imu to find the current angle
     public double getAngle()
     {
         // We experimentally determined the Z axis is the axis we want to use for heading angle.
@@ -247,7 +260,7 @@ abstract public class AutoSupplies extends LinearOpMode{
 
         return globalAngle;
     }
-
+    //uses the imu to get the current pitch of the robot
     public double getPitch()
     {
         // We experimentally determined the Z axis is the axis we want to use for heading angle.
@@ -328,7 +341,7 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorFwdRight.setPower(0);
     }
 
-    //  Init all hardware
+    //  Initiates all hardware for autonomous programs
     public void initForAutonomous()
     {
 
