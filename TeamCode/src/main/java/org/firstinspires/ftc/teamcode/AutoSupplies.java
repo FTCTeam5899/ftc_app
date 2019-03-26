@@ -34,7 +34,8 @@ abstract public class AutoSupplies extends LinearOpMode{
     protected DcMotor motorBackRight;
     protected DcMotor lift;
     protected Servo mServo;
-    protected Rev2mDistanceSensor distanceSensor;
+    protected Rev2mDistanceSensor distanceSensorL;
+    protected Rev2mDistanceSensor distanceSensorR;
     protected RevBlinkinLedDriver lights;
     protected BNO055IMU imu;
     protected Orientation lastAngles = new Orientation();
@@ -285,7 +286,7 @@ abstract public class AutoSupplies extends LinearOpMode{
     }
 
 
-    //drives the robot in a straight line using the gyro sensor
+    //drives the robot in a straight line using the gyro sensor and the distance sensor
     public void moveStraight(long millis, double power){
         runtime.reset();
         if(power >= 0.9 || power <= -0.9){
@@ -329,17 +330,6 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorFwdRight.setPower(0);
 
     }
-    public void distanceAlign(){
-        motorBackLeft.setPower(-0.4);
-        motorFwdLeft.setPower(0.4);
-        motorBackRight.setPower(0.4);
-        motorFwdRight.setPower(-0.4);
-        while(distanceSensor.getDistance(DistanceUnit.CM)>5);
-        motorBackLeft.setPower(0);
-        motorFwdLeft.setPower(0);
-        motorBackRight.setPower(0);
-        motorFwdRight.setPower(0);
-    }
 
     //  Initiates all hardware for autonomous programs
     public void initForAutonomous()
@@ -366,7 +356,8 @@ abstract public class AutoSupplies extends LinearOpMode{
 
 
         mServo = hardwareMap.get(Servo.class, "mServo");
-        distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "distanceSensor");
+        distanceSensorL = hardwareMap.get(Rev2mDistanceSensor.class, "distanceSensorL");
+        distanceSensorR = hardwareMap.get(Rev2mDistanceSensor.class, "distanceSensorR");
         lights = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
 

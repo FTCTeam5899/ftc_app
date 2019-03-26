@@ -132,7 +132,7 @@ public class CraterRightLow_Distance extends AutoSupplies{
         telemetry.clear();
         while(getPitch() < 4.0 && getPitch() > -4.0 && !isStopRequested()){
             telemetry.addData("Pitch",getPitch());
-            currentDistance = distanceSensor.getDistance(DistanceUnit.CM);
+            currentDistance = distanceSensorL.getDistance(DistanceUnit.CM);
             if(getAngle() > 25) {//need to test far turn scanner and fixer
                 turnTo(0, 0.5);
             }

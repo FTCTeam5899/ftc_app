@@ -25,7 +25,7 @@ public class BaseDrive extends LinearOpMode {
         private DcMotor motorR;
         private DcMotor motorS;
         private DcMotor lift;
-        protected Rev2mDistanceSensor distanceSensor;
+        protected Rev2mDistanceSensor distanceSensorL;
 
         private Servo mServo;
         private RevBlinkinLedDriver lights;
@@ -38,7 +38,7 @@ public class BaseDrive extends LinearOpMode {
 
         //  Neverest 40 motor spec:  quadrature encoder, 280 pulses per revolution, count = 280 *4
         private static final double COUNTS_PER_MOTOR_REV = 1120;    // Neverest 40 motor encoder                    Left(shoulder) motor
-        private static final double DRIVE_GEAR_REDUCTION1 = 27.0;     // This is < 1.0 if geared UP
+        private static final double DRIVE_GEAR_REDUCTION1 = 13.5;     // This is < 1.0 if geared UP
         private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;
 
         //  Neverest 60 motor left spec:  quadrature encoder, 420 pulses per revolution, count = 420 *4             We do not currently use 60's but have in the past
@@ -80,7 +80,7 @@ public class BaseDrive extends LinearOpMode {
             lift = hardwareMap.get(DcMotor.class, "lift");
 
             mServo = hardwareMap.get(Servo.class, "mServo");
-            distanceSensor = hardwareMap.get(Rev2mDistanceSensor.class, "distanceSensor");
+            distanceSensorL = hardwareMap.get(Rev2mDistanceSensor.class, "distanceSensorL");
             lights = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
             telemetry.addData("Status", "Initialized");
             telemetry.update();
@@ -243,7 +243,7 @@ public class BaseDrive extends LinearOpMode {
                 telemetry.addData("motorL", motorL.getCurrentPosition()/COUNTS_PER_DEGREE1);
                 telemetry.addData("Intake Power" , this.gamepad2.right_trigger);
                 telemetry.addData("mServo Pos", mServo.getPosition());
-                telemetry.addData("distance", distanceSensor.getDistance(DistanceUnit.CM));
+                telemetry.addData("distance", distanceSensorL.getDistance(DistanceUnit.CM));
                 telemetry.addData("Status", "Running");
                 telemetry.update();
 

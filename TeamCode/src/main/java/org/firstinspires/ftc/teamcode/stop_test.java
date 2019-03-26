@@ -38,7 +38,7 @@ public class stop_test extends AutoSupplies{
         mServo.setPosition(0.33);
         while(!isStopRequested()){
             telemetry.addData("pitch", getPitch());
-            telemetry.addData("distance", distanceSensor.getDistance(DistanceUnit.CM));
+            telemetry.addData("distance", distanceSensorL.getDistance(DistanceUnit.CM));
             telemetry.update();
 
             left = this.gamepad1.left_stick_y;
