@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Autonomous(name="CraterLeftLow", group="Official")
 
 public class CraterLeftLow extends AutoSupplies{
     @Override
+
     public void runOpMode() {
 
         //  Establish all hardware and initialize camera

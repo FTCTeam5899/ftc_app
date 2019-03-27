@@ -2,13 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.configuration.annotations.DigitalIoDeviceType;
 
-@Autonomous(name="DepotRight", group="Official")
-@Disabled
-public class DepotRight extends AutoSupplies{
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+@Autonomous(name="DepotRight_Sensors", group="Official")
+
+public class DepotRight_Distance extends AutoSupplies{
 
 
     @Override
@@ -23,7 +23,10 @@ public class DepotRight extends AutoSupplies{
         double y = 0;
         double times = 0;
         double tTime = 0;
+        double left = 0.6;
+        double right = 0.6;
         double angle = getAngle();
+        double currentDistance = 0;
         //  Wait until start
         waitForStart();
         //locks servo on place
@@ -131,14 +134,41 @@ public class DepotRight extends AutoSupplies{
         resetAngle();
         mServo.setPosition(0.68);
         resetAngle();
-        turnTo(1,0.6);
-        move(2500, 1,1);
-        if(angle <= -20){
-            move(700, 0, 0.5);
+        //drives into crater
+        //turnTo(1,0.6);//                                        **This is not Tested** change 95 to 85
+        //                                                              **Add pause for testing distance**
+        telemetry.clear();
+        while(getPitch() < 4.0 && getPitch() > -4.0 && !isStopRequested()){
+            telemetry.addData("Pitch",getPitch());
+            currentDistance = distanceSensorL.getDistance(DistanceUnit.CM);
+            if(getAngle() > 25) {//need to test far turn scanner and fixer
+                turnTo(0, 0.5);
+            }
+            else if(getAngle() < -25){
+                turnTo(0,0.5);
+            }
+            else {
+                if (currentDistance < 9) {
+                    left = 0.6;
+                    right = right * 0.9;//new addition of this being at 0.9 instead of 0.95
+                } else if (currentDistance > 11) {
+                    left = left * 0.9;//new addition of this being at 0.9 instead of 0.95
+                    right = 0.6;
+                } else {
+                    left = 0.6;
+                    right = 0.6;
+                }
+                motorFwdLeft.setPower(left);
+                motorFwdRight.setPower(-right);
+                motorBackLeft.setPower(-left);
+                motorBackRight.setPower(right);
+            }
+            telemetry.addData("Left", left);
+            telemetry.addData("Right", right);
+            telemetry.addData("Distance", currentDistance);
+            telemetry.update();
         }
-        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIGHT_CHASE_RED);
-        pause(3000);
-        goldDetector.alignSize = 100.0;
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE);
 
         //  Turn all motors off and sleep
         motorFwdLeft.setPower(0);

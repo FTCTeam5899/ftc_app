@@ -1,22 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.disnodeteam.dogecv.CameraViewDisplay;
-import com.disnodeteam.dogecv.DogeCV;
-import com.disnodeteam.dogecv.detectors.roverrukus.GoldAlignDetector;
-import com.disnodeteam.dogecv.detectors.roverrukus.SamplingOrderDetector;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="DepotLeft", group="Official")
-@Disabled
-public class DepotLeft extends AutoSupplies{
+
+public class DepotLeft_Distance extends AutoSupplies{
 
 
     @Override
@@ -31,7 +23,10 @@ public class DepotLeft extends AutoSupplies{
         double y = 0;
         double times = 0;
         double tTime = 0;
+        double left = 0.6;
+        double right = 0.6;
         double angle = getAngle();
+        double currentDistance = 0;
         //  Wait until start
         waitForStart();
         //locks servo on place
@@ -139,17 +134,41 @@ public class DepotLeft extends AutoSupplies{
         resetAngle();
         mServo.setPosition(0.68);
         resetAngle();
-        if(angle <= 10){turnTo(-1, 0.6);}
-        move(2500, 1, 1);
-        if (angle >= 20) {
-            move(3000, 0.5, 0);
+        //drives into crater
+        //turnTo(1,0.6);//                                        **This is not Tested** change 95 to 85
+        //                                                              **Add pause for testing distance**
+        telemetry.clear();
+        while(getPitch() < 4.0 && getPitch() > -4.0 && !isStopRequested()){
+            telemetry.addData("Pitch",getPitch());
+            currentDistance = distanceSensorR.getDistance(DistanceUnit.CM);
+            if(getAngle() > 25) {//need to test far turn scanner and fixer
+                turnTo(0, 0.5);
+            }
+            else if(getAngle() < -25){
+                turnTo(0,0.5);
+            }
+            else {
+                if (currentDistance > 11) {
+                    left = 0.6;
+                    right = right * 0.9;//new addition of this being at 0.9 instead of 0.95
+                } else if (currentDistance < 9) {
+                    left = left * 0.9;//new addition of this being at 0.9 instead of 0.95
+                    right = 0.6;
+                } else {
+                    left = 0.6;
+                    right = 0.6;
+                }
+                motorFwdLeft.setPower(left);
+                motorFwdRight.setPower(-right);
+                motorBackLeft.setPower(-left);
+                motorBackRight.setPower(right);
+            }
+            telemetry.addData("Left", left);
+            telemetry.addData("Right", right);
+            telemetry.addData("Distance", currentDistance);
+            telemetry.update();
         }
-        if (angle <= 20){
-            move(700, 0.5, 0.5);
-        }
-        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.LIGHT_CHASE_RED);
-        pause(3000);
-        goldDetector.alignSize = 100.0;
+        lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED_ORANGE);
 
         //  Turn all motors off and sleep
         motorFwdLeft.setPower(0);
