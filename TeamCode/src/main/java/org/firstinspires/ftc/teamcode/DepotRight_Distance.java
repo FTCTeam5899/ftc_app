@@ -39,6 +39,7 @@ public class DepotRight_Distance extends AutoSupplies{
         //backs it off the lander and turns
         while(lift.getCurrentPosition()<=18250 && !isStopRequested()){}
         pause(200);
+        resetPitch();
         move(500, -0.6, -0.6);
         move(500, -0.2, 0.8);
 
@@ -124,7 +125,7 @@ public class DepotRight_Distance extends AutoSupplies{
             moveStraight(200, -0.5);
             turnTo(-145,0.5);
             turnTo(-145,0.25);
-            moveStraight(600,-0.5);
+            moveStraight(700,-0.5);
             resetAngle();
             turnTo(20, 0.6);
             turnTo(22, 0.25);

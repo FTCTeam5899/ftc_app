@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@Autonomous(name="DepotLeft", group="Official")
+@Autonomous(name="DepotLeft_Sensors", group="Official")
 
 public class DepotLeft_Distance extends AutoSupplies{
 
@@ -37,9 +37,9 @@ public class DepotLeft_Distance extends AutoSupplies{
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         lift.setPower(1);
         //backs it off the lander and turns
-        while (lift.getCurrentPosition() <= 18150 && !isStopRequested()) {
-        }
+        while (lift.getCurrentPosition() <= 18150 && !isStopRequested()){}
         pause(200);
+        resetPitch();
         move(500, -0.6, -0.6);
         move(500, -0.2, 0.8);
 
