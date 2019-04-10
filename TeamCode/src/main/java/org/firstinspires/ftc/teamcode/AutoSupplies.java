@@ -54,13 +54,23 @@ abstract public class AutoSupplies extends LinearOpMode{
     protected double globalAngle;
     protected double globalPitch;
 
-    //  Neverest 40 motor spec:  quadrature encoder, 1120 pulses per revolution, count = 280 *4
-    private static final double COUNTS_PER_MOTOR_REV = 1120;    // Neverest 40 motor encoder
-    private static final double DRIVE_GEAR_REDUCTION1 = 27.0;     // This is < 1.0 if geared UP
-    private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;;
-    // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-    // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-    // and named "imu".
+    //Encoder Specs
+    //We keep these motors separate in case a change is made to motors or gear boxes
+
+    //  Neverest 40 motor spec:  quadrature encoder, 280 pulses per revolution, count = 280 *4
+    private static final double COUNTS_PER_MOTOR_REV = 1120;    // Neverest 40 motor encoder                    Left(shoulder) motor
+    private static final double DRIVE_GEAR_REDUCTION1 = 13.5;     // This is < 1.0 if geared UP
+    private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;
+
+    //  Neverest 40 motor right spec:  quadrature encoder, 280 pulses per revolution, count = 280 *4
+    private static final double COUNTS_PER_MOTOR_REV2 = 1120;    // Neverest 40 motor encoder                   Right(elbow) motor
+    private static final double DRIVE_GEAR_REDUCTION2 = 13.5;     // This is < 1.0 if geared UP
+    private static final double COUNTS_PER_DEGREE2 = (COUNTS_PER_MOTOR_REV2 * DRIVE_GEAR_REDUCTION2) / 360;
+
+    //  Neverest 60 motor left spec:  quadrature encoder, 420 pulses per revolution, count = 420 *4             We do not currently use 60's but have in the past
+    //private static final double COUNTS_PER_MOTOR_REV = 1680;    // Neverest 60 motor encoder                  This is just a reserve in case changes are made
+    //private static final double DRIVE_GEAR_REDUCTION1 = 27.0;     // This is < 1.0 if geared UP
+    //private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;
 
 
     //Callable methods
@@ -98,12 +108,11 @@ abstract public class AutoSupplies extends LinearOpMode{
         goldDetector = new GoldAlignDetector();
         goldDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
         goldDetector.useDefaults();
-        // Optional Tuning
+        // Optional Tuning used mostly in development
         goldDetector.alignSize = 100; // How wide (in pixels) is the range in which the gold object will be aligned. (Represented by green bars in the preview)
         goldDetector.alignPosOffset = 0; // How far from center frame to offset this alignment zone.
         goldDetector.downscale = 0; // How much to downscale the input frames
         goldDetector.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
-        //goldDetector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
         goldDetector.maxAreaScorer.weight = 0.005;
         goldDetector.ratioScorer.weight = 5;
         goldDetector.ratioScorer.perfectRatio = 0;
@@ -112,7 +121,7 @@ abstract public class AutoSupplies extends LinearOpMode{
 
     //turns on camera and starts order detector - scans for both of the silver and the gold at the same time and returns
     //                                            the location of the gold relative to the two silver
-    //### not currently used
+    //### not currently used as requires all three minerals to be in camera view which our camera cannot do
     public void enableOrderDetector(){
         orderDetector = new SamplingOrderDetector();
         orderDetector.init(hardwareMap.appContext, CameraViewDisplay.getInstance());
@@ -122,7 +131,6 @@ abstract public class AutoSupplies extends LinearOpMode{
 
         // Optional Tuning
         orderDetector.areaScoringMethod = DogeCV.AreaScoringMethod.MAX_AREA; // Can also be PERFECT_AREA
-        //detector.perfectAreaScorer.perfectArea = 10000; // if using PERFECT_AREA scoring
         orderDetector.maxAreaScorer.weight = 0.005;
 
         orderDetector.ratioScorer.weight = 5;
@@ -334,7 +342,9 @@ abstract public class AutoSupplies extends LinearOpMode{
     //  Initiates all hardware for autonomous programs
     public void initForAutonomous()
     {
-
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
         BNO055IMU.Parameters gyroParameters = new BNO055IMU.Parameters();
 
         gyroParameters.mode                = BNO055IMU.SensorMode.IMU;
@@ -342,6 +352,7 @@ abstract public class AutoSupplies extends LinearOpMode{
         gyroParameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         gyroParameters.loggingEnabled      = false;
 
+        //initialize hardware
         motorFwdRight = hardwareMap.get(DcMotor.class, "motorFwdRight");
         motorBackLeft = hardwareMap.get(DcMotor.class, "motorBackLeft");
         motorFwdLeft = hardwareMap.get(DcMotor.class, "motorFwdLeft");
@@ -353,17 +364,18 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorFwdLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
         mServo = hardwareMap.get(Servo.class, "mServo");
         distanceSensorL = hardwareMap.get(Rev2mDistanceSensor.class, "distanceSensorL");
         distanceSensorR = hardwareMap.get(Rev2mDistanceSensor.class, "distanceSensorR");
         lights = hardwareMap.get(RevBlinkinLedDriver.class, "lights");
+
+        //lights turn green to show that hardware is initialized
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.YELLOW);
 
+        //initializes imu and calibrates it. Prepares lift motor to land using the encoder
+        // Lights turn green when it is calibrated
         telemetry.addData("Mode", "calibrating...");
         telemetry.update();
-
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(gyroParameters);
 

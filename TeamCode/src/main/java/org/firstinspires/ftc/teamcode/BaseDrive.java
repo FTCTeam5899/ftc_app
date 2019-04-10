@@ -35,21 +35,22 @@ public class BaseDrive extends LinearOpMode {
 
         private double max = 1.0;
         //Encoder Specs
+        //We keep these motors separate in case a change is made to motors or gear boxes
 
         //  Neverest 40 motor spec:  quadrature encoder, 280 pulses per revolution, count = 280 *4
         private static final double COUNTS_PER_MOTOR_REV = 1120;    // Neverest 40 motor encoder                    Left(shoulder) motor
         private static final double DRIVE_GEAR_REDUCTION1 = 13.5;     // This is < 1.0 if geared UP
         private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;
 
-        //  Neverest 60 motor left spec:  quadrature encoder, 420 pulses per revolution, count = 420 *4             We do not currently use 60's but have in the past
-        //private static final double COUNTS_PER_MOTOR_REV = 1680;    // Neverest 60 motor encoder
-        //private static final double DRIVE_GEAR_REDUCTION1 = 27.0;     // This is < 1.0 if geared UP
-        //private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;
-
         //  Neverest 40 motor right spec:  quadrature encoder, 280 pulses per revolution, count = 280 *4
         private static final double COUNTS_PER_MOTOR_REV2 = 1120;    // Neverest 40 motor encoder                   Right(elbow) motor
         private static final double DRIVE_GEAR_REDUCTION2 = 13.5;     // This is < 1.0 if geared UP
         private static final double COUNTS_PER_DEGREE2 = (COUNTS_PER_MOTOR_REV2 * DRIVE_GEAR_REDUCTION2) / 360;
+
+        //  Neverest 60 motor left spec:  quadrature encoder, 420 pulses per revolution, count = 420 *4             We do not currently use 60's but have in the past
+        //private static final double COUNTS_PER_MOTOR_REV = 1680;    // Neverest 60 motor encoder                  This is just a reserve in case changes are made
+        //private static final double DRIVE_GEAR_REDUCTION1 = 27.0;     // This is < 1.0 if geared UP
+        //private static final double COUNTS_PER_DEGREE1 = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION1) / 360;
 
         /*This function determines the number of ticks a motor
          would need to move in order to achieve a certain degree*/
@@ -237,7 +238,7 @@ public class BaseDrive extends LinearOpMode {
                     mServo.setPosition(mServo.getPosition()-0.01);
                 }
 
-                /*Telemetry shows all of the angles and positions of encoders and servos*/
+                //Telemetry shows all of the angles and positions of encoders and servos
                 telemetry.addData("LiftPos", lift.getCurrentPosition());
                 telemetry.addData("motorR", motorR.getCurrentPosition()/COUNTS_PER_DEGREE2);
                 telemetry.addData("motorL", motorL.getCurrentPosition()/COUNTS_PER_DEGREE1);

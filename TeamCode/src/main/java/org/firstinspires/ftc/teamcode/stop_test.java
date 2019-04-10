@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name="stop_test", group="Official")
+@Disabled
 public class stop_test extends AutoSupplies{
     @Override
     public void runOpMode() {

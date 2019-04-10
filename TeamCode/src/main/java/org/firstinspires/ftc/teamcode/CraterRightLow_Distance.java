@@ -20,12 +20,18 @@ public class CraterRightLow_Distance extends AutoSupplies{
         initForAutonomous();
         double x = 0;
         double y = 0;
-        double times = 0;
         double tTime = 0;
         double left = 0.6;
         double right = 0.6;
         double angle = getAngle();
         double currentDistance = 0;
+        while(!isStopRequested()){
+            x = goldDetector.getXPosition();
+            y = goldDetector.getYPosition();
+            telemetry.addData("x",x);
+            telemetry.addData("y",y);
+            telemetry.update();
+        }
         //  Wait until start
         waitForStart();
         //locks servo on place
@@ -51,8 +57,7 @@ public class CraterRightLow_Distance extends AutoSupplies{
         lift.setPower(1);
         lights.setPattern(RevBlinkinLedDriver.BlinkinPattern.BLUE_VIOLET);
 
-        //moves forward, turns left, then slowly
-        //turns until is aligned with cube
+        //moves forward, turns left, then slowly turns until is aligned with cube
         move(300, 0.4, 0.4);
         move(800, -0.3, 0.3);
         goldDetector.alignSize = 50.0;//283 419
@@ -100,12 +105,6 @@ public class CraterRightLow_Distance extends AutoSupplies{
         turnTo(90,0.25);
         //determines if the cube was left right or center and moves straight for the allotted time
         moveStraight(1800, 0.5);
-
-        //%%%%%%%%
-        //%%%%%%%%
-        //%%%%%%%%
-        //%%%%%%%%
-
         //drives toward wall and turns to face it
         pause(100);
         resetAngle();
@@ -126,14 +125,20 @@ public class CraterRightLow_Distance extends AutoSupplies{
         //drops the team marker, and moves to the crater
         mServo.setPosition(0.68);
         resetAngle();
-        //drives into crater
-        //turnTo(1,0.6);//                                        **This is not Tested** change 95 to 85
-        //                                                              **Add pause for testing distance**
+        /*
+        This While loop is used to navigate from the depot back to the crater. It stays in the for
+        loop until it drives over the crater wall. It knows it is on the wall when the imu, set to
+        measure pitch, senses that the robot is on a upward facing plane. In order to get to the
+        wall, we use a light distance sensor to follow along a wall adjusting motor power as needed.
+        If the robot is driven so severely off course by some unknown factor such as hitting another
+        robot, the gyro sensor will detect that and turn the robot back to a bearing similar to the
+        angle at which it started driving to get to the crater.
+         */
         telemetry.clear();
         while(getPitch() < 4.0 && getPitch() > -4.0 && !isStopRequested()){
             telemetry.addData("Pitch",getPitch());
             currentDistance = distanceSensorL.getDistance(DistanceUnit.CM);
-            if(getAngle() > 25) {//need to test far turn scanner and fixer
+            if(getAngle() > 25) {
                 turnTo(0, 0.5);
             }
             else if(getAngle() < -25){
@@ -142,9 +147,9 @@ public class CraterRightLow_Distance extends AutoSupplies{
             else {
                 if (currentDistance < 9) {
                     left = 0.6;
-                    right = right * 0.9;//new addition of this being at 0.9 instead of 0.95
+                    right = right * 0.9;
                 } else if (currentDistance > 11) {
-                    left = left * 0.9;//new addition of this being at 0.9 instead of 0.95
+                    left = left * 0.9;
                     right = 0.6;
                 } else {
                     left = 0.6;
