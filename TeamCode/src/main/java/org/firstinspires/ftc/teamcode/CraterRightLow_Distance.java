@@ -25,13 +25,6 @@ public class CraterRightLow_Distance extends AutoSupplies{
         double right = 0.6;
         double angle = getAngle();
         double currentDistance = 0;
-        while(!isStopRequested()){
-            x = goldDetector.getXPosition();
-            y = goldDetector.getYPosition();
-            telemetry.addData("x",x);
-            telemetry.addData("y",y);
-            telemetry.update();
-        }
         //  Wait until start
         waitForStart();
         //locks servo on place
