@@ -25,6 +25,7 @@ public class CraterRightLow_Distance extends AutoSupplies{
         double right = 0.6;
         double angle = getAngle();
         double currentDistance = 0;
+        boolean done = false;
         //  Wait until start
         waitForStart();
         //locks servo on place
@@ -74,7 +75,16 @@ public class CraterRightLow_Distance extends AutoSupplies{
                 else{
                     break;
                 }
-            } else {
+                if(getAngle() <= -24 && !done){
+                    move(300, 0.4, 0.4);
+                    done = true;
+                }
+            }
+            else if(getAngle() <= -24 && !done){
+                move(300, 0.4, 0.4);
+                done = true;
+            }
+            else {
                 setPower(0.3,-0.3);
                 tTime += 1;
             }
