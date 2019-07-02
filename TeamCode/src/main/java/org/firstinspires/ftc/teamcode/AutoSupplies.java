@@ -183,8 +183,69 @@ abstract public class AutoSupplies extends LinearOpMode{
         motorBackRight.setPower(0);
         motorFwdRight.setPower(0);
     }
-
     //Using the gyroscope, when a degree is passed both left and right motors move accordingly in
+    //order to turn the robot to the right or left until the bearing is equal to or greater than the
+    //specified degree. Power can also be specified.
+    //used commonly in pairs(one fast for speed and one slow for accuracy) to improve movement time.
+    public void turnToS(int degrees, double power){
+        int left = 1;
+        int right = 1;
+        double distance = getAngle() - degrees;
+        double startAngle = getAngle();
+        telemetry.addData("Angle3",getAngle());
+        telemetry.update();
+        if(getAngle() >= degrees){
+            left *= -1;
+        }
+        else if(getAngle() < degrees){
+            right *= -1;
+        }
+
+        motorBackLeft.setPower(power * left);
+        motorFwdLeft.setPower(-power * left);
+        motorBackRight.setPower(-power * right);
+        motorFwdRight.setPower(power* right);
+
+        if (getAngle() > degrees)
+        {
+            // On left turn we have to get off zero first.
+            while (opModeIsActive() && getAngle() >= degrees) {
+                telemetry.addData("Angle4",getAngle());
+                telemetry.update();
+                if((startAngle + ((distance/4)*3)) > getAngle()){
+                    left *= 1.05;
+                    right *= 1.05;
+                }
+                else{
+                    if(left > 1 || left < -1 || right > 1 || right < -1){
+                        left*=0.95;
+                        right*=0.95;
+                    }
+                }
+            }
+        }
+        else {    // right turn.
+            while (opModeIsActive() && getAngle() <= degrees) {
+                telemetry.addData("Angle4", getAngle());
+                telemetry.update();
+                if((startAngle + ((distance/4)*3)) > getAngle()){
+                    left *= 1.01;
+                    right *= 1.01;
+                }
+                else{
+                    if(left > 1 || left < -1 || right > 1 || right < -1){
+                        left*=0.99;
+                        right*=0.99;
+                    }
+                }
+            }
+        }
+        // turn the motors off.
+        motorBackLeft.setPower(0);
+        motorFwdLeft.setPower(0);
+        motorBackRight.setPower(0);
+        motorFwdRight.setPower(0);
+    }    //Using the gyroscope, when a degree is passed both left and right motors move accordingly in
     //order to turn the robot to the right or left until the bearing is equal to or greater than the
     //specified degree. Power can also be specified.
     //used commonly in pairs(one fast for speed and one slow for accuracy) to improve movement time.

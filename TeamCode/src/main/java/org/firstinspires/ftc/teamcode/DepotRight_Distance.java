@@ -24,6 +24,8 @@ public class DepotRight_Distance extends AutoSupplies{
         double tTime = 0;
         double left = 0.6;
         double right = 0.6;
+        double first = 0.6; // was 0.5
+        double second = 0.35; // was 0.25
         double angle = getAngle();
         double currentDistance = 0;
         //  Wait until start
@@ -39,11 +41,11 @@ public class DepotRight_Distance extends AutoSupplies{
         while(lift.getCurrentPosition()<=18250 && !isStopRequested()){}
         pause(200);
         resetPitch();
-        move(500, -0.6, -0.6);
+        move(400, -0.6, -0.6);
         move(500, -0.2, 0.8);
 
-        turnTo(90, 0.7);
-        turnTo(90,0.25);
+        turnToS(90, 0.7);
+        turnToS(90,0.3);
         resetAngle();
         lift.setTargetPosition(0);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -65,17 +67,17 @@ public class DepotRight_Distance extends AutoSupplies{
                 telemetry.addData("working",y);
                 telemetry.update();
                 if (x >= 320 && !goldDetector.getAligned()) {
-                    setPower(0.24,-0.24);
+                    setPower(0.32,-0.32);
                     tTime += 1;
                 } else if (x <= 320 && !goldDetector.getAligned()) {
-                    setPower(-0.24,0.24);
+                    setPower(-0.32,0.32);
                     tTime += 1;
                 }
                 else{
                     break;
                 }
             } else {
-                setPower(0.3,-0.3);
+                setPower(0.31,-0.31);
                 tTime += 1;
             }
         }
@@ -102,31 +104,31 @@ public class DepotRight_Distance extends AutoSupplies{
         if(angle >= 20){
             telemetry.addData("left",0);
             telemetry.update();
-            turnTo(-45,0.5);
-            turnTo(-45,0.25);
+            turnToS(-45,first);
+            turnToS(-45,second);
             resetAngle();
             moveStraight(1400,0.5);
-            turnTo(-83,0.5);
-            turnTo(-83,0.25);
+            turnToS(-83,first);
+            turnToS(-83,second);
 
         }
         else if(angle <= -20){
             telemetry.addData("right",0);
             telemetry.update();
-            turnTo(-135,0.5);
-            turnTo(-135,0.25);
+            turnToS(-135,first);
+            turnToS(-135,second);
             moveStraight(1400,-0.5);
         }
         else{
             telemetry.addData("center", 0);
             telemetry.update();
             moveStraight(200, -0.5);
-            turnTo(-145,0.5);
-            turnTo(-145,0.25);
+            turnToS(-145,first);
+            turnToS(-145,second);
             moveStraight(700,-0.5);
             resetAngle();
-            turnTo(20, 0.6);
-            turnTo(22, 0.25);
+            turnToS(20, first);
+            turnToS(22, second);
         }
 
 
@@ -147,10 +149,10 @@ public class DepotRight_Distance extends AutoSupplies{
             telemetry.addData("Pitch",getPitch());
             currentDistance = distanceSensorL.getDistance(DistanceUnit.CM);
             if(getAngle() > 25) {//need to test far turn scanner and fixer
-                turnTo(0, 0.5);
+                turnToS(0, first);
             }
             else if(getAngle() < -25){
-                turnTo(0,0.5);
+                turnToS(0,first);
             }
             else {
                 if (currentDistance < 9) {

@@ -23,6 +23,8 @@ public class CraterRightLow_Distance extends AutoSupplies{
         double tTime = 0;
         double left = 0.6;
         double right = 0.6;
+        double first = 0.6; // was 0.5
+        double second = 0.35; // was 0.25
         double angle = getAngle();
         double currentDistance = 0;
         boolean done = false;
@@ -43,8 +45,8 @@ public class CraterRightLow_Distance extends AutoSupplies{
         move(400, -0.6, -0.6);
         move(500, -0.2, 0.8);
 
-        turnTo(90, 0.7);
-        turnTo(90,0.25);
+        turnToS(90, 0.7);
+        turnToS(90,0.3);
         resetAngle();
         lift.setTargetPosition(0);
         lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -66,13 +68,16 @@ public class CraterRightLow_Distance extends AutoSupplies{
                 telemetry.addData("working",y);
                 telemetry.update();
                 if (x >= 320 && !goldDetector.getAligned()) {
-                    setPower(0.24,-0.24);
+                    setPower(0.32,-0.32);//was 0.24
                     tTime += 1;
                 } else if (x <= 320 && !goldDetector.getAligned()) {
-                    setPower(-0.24,0.24);
+                    setPower(-0.32,0.32);
                     tTime += 1;
                 }
                 else{
+                    //if(getAngle() > -10 || getAngle() < 10 && goldDetector.getAligned()){
+                    //    turnToS(1,.3);
+                    //}
                     break;
                 }
                 if(getAngle() <= -24 && !done){
@@ -85,7 +90,7 @@ public class CraterRightLow_Distance extends AutoSupplies{
                 done = true;
             }
             else {
-                setPower(0.3,-0.3);
+                setPower(0.26,-0.26);
                 tTime += 1;
             }
         }
@@ -104,16 +109,16 @@ public class CraterRightLow_Distance extends AutoSupplies{
         //moves backwards
         move(750, -0.5, -0.5);
         //turns toward the depot with 2 statements to ensure accuracy and speed
-        turnTo(90,0.5);
-        turnTo(90,0.25);
+        turnToS(90,first);
+        turnToS(90,second);
         //determines if the cube was left right or center and moves straight for the allotted time
         moveStraight(1800, 0.5);
         //drives toward wall and turns to face it
         pause(100);
         resetAngle();
         pause(100);
-        turnTo(-45,0.5);
-        turnTo(-45,0.25);
+        turnToS(-45,first);
+        turnToS(-45,second);
         //moves to and aligns with the wall
         move(1300, 0.3, 0.3);
         //backs up
@@ -122,11 +127,13 @@ public class CraterRightLow_Distance extends AutoSupplies{
         pause(100);
         resetAngle();
         pause(100);
-        turnTo(-87,0.5);
-        turnTo(-88,0.25);
+        turnToS(-87,first);
+        turnToS(-90,second);
         moveStraight(1600, -1.0);
         //drops the team marker, and moves to the crater
         mServo.setPosition(0.68);
+        resetAngle();
+        turnToS(1,second);
         resetAngle();
         /*
         This While loop is used to navigate from the depot back to the crater. It stays in the for
@@ -142,10 +149,10 @@ public class CraterRightLow_Distance extends AutoSupplies{
             telemetry.addData("Pitch",getPitch());
             currentDistance = distanceSensorL.getDistance(DistanceUnit.CM);
             if(getAngle() > 25) {
-                turnTo(0, 0.5);
+                turnToS(0, first);
             }
             else if(getAngle() < -25){
-                turnTo(0,0.5);
+                turnToS(0,first);
             }
             else {
                 if (currentDistance < 9) {
