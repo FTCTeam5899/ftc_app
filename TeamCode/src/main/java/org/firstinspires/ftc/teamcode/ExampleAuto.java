@@ -54,7 +54,7 @@ public class ExampleAuto extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-
+/*
         robot.Andy.setPower(FORWARD_SPEED);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 3.0)) {
@@ -68,8 +68,9 @@ public class ExampleAuto extends LinearOpMode {
             telemetry.addData("Path", "Leg 2: %2.5f S Elapsed", runtime.seconds());
             telemetry.update();
         }
+        */
 
-        robot.Andy.setPower(-FORWARD_SPEED);
+        robot.Andy.setPower(0.54);
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() < 1.0)) {
             telemetry.addData("Path", "Leg 3: %2.5f S Elapsed", runtime.seconds());

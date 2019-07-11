@@ -9,11 +9,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class MecanumHardwareMap {
     //Say what exists
     public DcMotor  leftFrontMotor   = null;
-    public DcMotor  rightFront   = null;
-    public DcMotor  Andy   = null;
-    public DcMotor  Andy   = null;
-    public Servo    Seral  = null;
-    public CRServo CRSeral = null;
+    public DcMotor  rightFrontMotor   = null;
+    public DcMotor  leftBackMotor   = null;
+    public DcMotor  rightBackMotor   = null;
 
     //Random Garbage
     HardwareMap hwMap =  null;
@@ -23,20 +21,29 @@ public class MecanumHardwareMap {
         hwMap = ahwMap;
 
         //Name them
-        Andy  = hwMap.get(DcMotor.class, "Andy");
-        Andy.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontMotor  = hwMap.get(DcMotor.class, "leftFrontMotor");
+        leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        rightFrontMotor  = hwMap.get(DcMotor.class, "rightFrontMotor");
+
+        leftBackMotor  = hwMap.get(DcMotor.class, "leftBackMotor");
+        leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        rightBackMotor  = hwMap.get(DcMotor.class, "rightBackMotor");
 
         // Set to 0
-        Andy.setPower(0);
+        leftFrontMotor.setPower(0);
+        leftBackMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        rightBackMotor.setPower(0);
+
 
         // encoder?
-        Andy.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //Andy.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         // Name Servos and set to 0
-        Seral = hwMap.get(Servo.class, "Seral");
-        Seral.setPosition(0);
-        CRSeral = hwMap.get(CRServo.class, "CRSeral");
-        CRSeral.setPower(0);
+
     }
 }
+

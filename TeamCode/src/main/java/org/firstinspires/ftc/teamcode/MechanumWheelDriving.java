@@ -12,8 +12,15 @@ public class MechanumWheelDriving extends OpMode {
     DcMotor leftBackMotor;
     DcMotor rightBackMotor;
 
-    HardwareMapOne robot       = new HardwareMapOne();
-    double speed=0;
+    MecanumHardwareMap robot       = new MecanumHardwareMap();
+    double fwdBackPower, strafePower, turnPower, maxPower;
+    double leftFrontPower, rightFrontPower;
+    double leftBackPower, rightBackPower;
+
+    //leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
+    //rightFrontMotor = hardwareMap.dcMotor.get("rightFrontMotor");
+    //leftBackMotor = hardwareMap.dcMotor.get("leftBackMotor");
+    //rightBackMotor = hardwareMap.dcMotor.get("rightBackMotor");
 
 
     @Override
@@ -32,20 +39,38 @@ public class MechanumWheelDriving extends OpMode {
     }
     @Override
     public void loop() {
+        fwdBackPower = -gamepad1.left_stick_y;
+        strafePower = gamepad1.left_stick_x;
+        turnPower = gamepad1.right_stick_x;
 
+        leftFrontPower = fwdBackPower + turnPower +strafePower;
+        rightFrontPower = fwdBackPower - turnPower - strafePower;
+        leftBackPower = fwdBackPower + turnPower - strafePower;
+        rightBackPower = fwdBackPower - turnPower + strafePower;
 
-        double analog;
-
-
-        analog = gamepad1.right_stick_y;
-        robot.Andy.setPower(analog);
-
-
-        if (gamepad1.a) {
-            robot.Seral.setPosition(1);
-        } else if (gamepad1.b) {
-            robot.Seral.setPosition(-1);
+        maxPower = Math.abs(leftFrontPower);
+        if(Math.abs(rightFrontPower)>maxPower) {
+            maxPower = Math.abs(rightFrontPower);
         }
+        if(Math.abs(leftBackPower)>maxPower) {
+            maxPower = Math.abs(leftBackPower);
+        }
+        if(Math.abs(rightBackPower)>maxPower) {
+            maxPower = Math.abs(rightBackPower);
+        }
+        if(maxPower>1) {
+            leftFrontPower = leftFrontPower/maxPower;
+            rightFrontPower = rightFrontPower/maxPower;
+            leftBackPower = leftBackPower/maxPower;
+            rightBackPower = rightBackPower/maxPower;
+
+        }
+        //telemetry.addData("powers",)
+        robot.leftFrontMotor.setPower(leftFrontPower);
+        robot.rightFrontMotor.setPower(rightFrontPower);
+        robot.leftBackMotor.setPower(leftBackPower);
+        robot.rightBackMotor.setPower(rightBackPower);
+
     }
     @Override
     public void stop() {
@@ -55,44 +80,3 @@ public class MechanumWheelDriving extends OpMode {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}

@@ -41,7 +41,7 @@ import org.firstinspires.ftc.teamcode.HardwareMapOne;
 public class ExampleTeleOp extends OpMode{
 
 
-    HardwareMapOne robot       = new HardwareMapOne();
+    ExampleHardwareMap robot       = new ExampleHardwareMap();
     double speed=0;
 
 
@@ -71,9 +71,9 @@ public class ExampleTeleOp extends OpMode{
 
 
         if (gamepad1.a) {
-            robot.Seral.setPosition(1);
+            //robot.Seral.setPosition(1);
         } else if (gamepad1.b) {
-            robot.Seral.setPosition(-1);
+            //robot.Seral.setPosition(-1);
         }
     }
     @Override

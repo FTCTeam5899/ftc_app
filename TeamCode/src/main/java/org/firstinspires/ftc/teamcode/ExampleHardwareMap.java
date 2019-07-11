@@ -9,8 +9,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class ExampleHardwareMap {
     //Say what exists
     public DcMotor  Andy   = null;
-    public Servo    Seral  = null;
-    public CRServo CRSeral = null;
+    //public Servo    Seral  = null;
+    //public CRServo CRSeral = null;
 
     //Random Garbage
     HardwareMap hwMap =  null;
@@ -31,9 +31,9 @@ public class ExampleHardwareMap {
 
 
         // Name Servos and set to 0
-        Seral = hwMap.get(Servo.class, "Seral");
-        Seral.setPosition(0);
-        CRSeral = hwMap.get(CRServo.class, "CRSeral");
-        CRSeral.setPower(0);
+        //Seral = hwMap.get(Servo.class, "Seral");
+        //Seral.setPosition(0);
+        //CRSeral = hwMap.get(CRServo.class, "CRSeral");
+        //CRSeral.setPower(0);
     }
 }
