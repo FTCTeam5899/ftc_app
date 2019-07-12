@@ -88,7 +88,6 @@ public class hardwareMap
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
         Andy.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
         // Define and initialize ALL installed servos.
         Seral  = hwMap.get(Servo.class, "Seral");
         Seral.setPosition(MID_SERVO);

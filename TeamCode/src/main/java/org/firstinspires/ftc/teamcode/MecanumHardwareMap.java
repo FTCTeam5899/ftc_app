@@ -22,14 +22,15 @@ public class MecanumHardwareMap {
 
         //Name them
        leftFrontMotor  = hwMap.get(DcMotor.class, "leftFrontMotor");
-        leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        rightFrontMotor  = hwMap.get(DcMotor.class, "leftFrontMotor");
+        rightFrontMotor  = hwMap.get(DcMotor.class, "rightFrontMotor");
+        rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        leftBackMotor  = hwMap.get(DcMotor.class, "leftFrontMotor");
-        leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
+        leftBackMotor  = hwMap.get(DcMotor.class, "leftBackMotor");
 
-        rightBackMotor  = hwMap.get(DcMotor.class, "leftFrontMotor");
+
+        rightBackMotor  = hwMap.get(DcMotor.class, "rightBackMotor");
+        rightBackMotor.setDirection(DcMotor.Direction.REVERSE);
 
         // Set to 0
         leftFrontMotor.setPower(0);
