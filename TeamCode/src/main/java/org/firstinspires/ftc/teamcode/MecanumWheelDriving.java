@@ -14,6 +14,15 @@ public class MecanumWheelDriving extends OpMode {
 
     private ElapsedTime elapsed_time = new ElapsedTime();
 
+    double now, before;
+
+    double LeftFrontdPrev, LeftFrontdCurrent;
+
+    double RightFrontdPrev, RightFrontdCurrent;
+
+    double LeftBackdPrev, LeftBackdCurrent;
+
+    double RightBackdPrev, RightBackdCurrent;
 
 
     @Override
@@ -23,6 +32,20 @@ public class MecanumWheelDriving extends OpMode {
     }
     @Override
     public void init_loop(){
+        now = 0.0;
+        before=0.0;
+
+        LeftFrontdPrev=0.0;
+        LeftFrontdCurrent=0.0;
+
+        RightFrontdPrev=0.0;
+        RightFrontdCurrent=0.0;
+
+        LeftBackdPrev=0.0;
+        LeftBackdCurrent=0.0;
+
+        RightBackdPrev=0.0;
+        RightBackdCurrent=0.0;
     }
 
 
@@ -32,9 +55,35 @@ public class MecanumWheelDriving extends OpMode {
     }
     @Override
     public void loop() {
-        fwdBackPower = -gamepad1.left_stick_y;
-        strafePower = gamepad1.left_stick_x;
-        turnPower = gamepad1.right_stick_x;
+        //Sense
+            fwdBackPower = -gamepad1.left_stick_y;
+            strafePower = gamepad1.left_stick_x;
+            turnPower = gamepad1.right_stick_x;
+
+
+            before=now;
+            now=elapsed_time.milliseconds();
+
+
+            //leftFront
+            LeftFrontdPrev=LeftFrontdCurrent;
+            LeftFrontdCurrent=robot.leftFrontMotor.getCurrentPosition();
+
+
+            //leftBack
+            LeftBackdPrev = LeftBackdCurrent;
+            LeftBackdCurrent=robot.leftBackMotor.getCurrentPosition();
+
+
+            //rightFront
+            RightFrontdPrev=RightBackdCurrent;
+            RightFrontdCurrent=robot.rightFrontMotor.getCurrentPosition();
+
+
+            //rightBack
+            RightBackdPrev=RightBackdCurrent;
+            RightBackdCurrent=robot.rightBackMotor.getCurrentPosition();
+
 
         leftFrontPower = fwdBackPower + turnPower +strafePower;
         rightFrontPower = fwdBackPower - turnPower - strafePower;
@@ -58,18 +107,40 @@ public class MecanumWheelDriving extends OpMode {
             rightBackPower = rightBackPower/maxPower;
 
         }
-        telemetry.addData("leftFront:", leftFrontPower);
-        telemetry.addData("leftFront", elapsed_time.milliseconds());
-        //telemetry.addData("leftFront",
-        telemetry.addData("leftBack:", leftBackPower);
-        telemetry.addData("leftBack", elapsed_time.milliseconds());
-        //telemetry.addData("leftBack",
-        telemetry.addData("rightFront:", rightFrontPower);
-        telemetry.addData("rightFront", elapsed_time.milliseconds());
-        //telemetry.addData("rightFront",
-        telemetry.addData("rightBack:",rightBackPower);
-        telemetry.addData("rightBack", elapsed_time.milliseconds());
-        //telemetry.addData("rightBack",
+
+
+
+
+
+
+        //leftFront
+        telemetry.addData("leftFront Power :", leftFrontPower);
+        telemetry.addData("leftFront Time :", now);
+        telemetry.addData("leftFront Encoders :", LeftFrontdCurrent);
+        telemetry.addData("leftFront velocity :", (LeftFrontdCurrent-LeftFrontdPrev)/(now-before));
+        telemetry.addData(" "," ");
+
+        //leftBack
+        telemetry.addData("leftBack Power :", leftBackPower);
+        telemetry.addData("leftBack Time :", now);
+        telemetry.addData("leftBack Encoders :",LeftBackdCurrent);
+        telemetry.addData("leftBack velocity :",(LeftBackdCurrent-LeftBackdPrev)/(now-before));
+
+        //rightFront
+        telemetry.addData("rightFront Power :", rightFrontPower);
+        telemetry.addData("rightFront Time :", now);
+        telemetry.addData("rightFront Encoders :", RightFrontdCurrent);
+        telemetry.addData("rightFront velocity :",(RightFrontdCurrent-RightFrontdPrev)/(now-before));
+        telemetry.addData(" "," ");
+
+        //rightBack
+        telemetry.addData("rightBack Power :",rightBackPower);
+        telemetry.addData("rightBack Time :", now);
+        telemetry.addData("rightBack Encoders :",RightBackdCurrent);
+        telemetry.addData("rightBack velocity :",(RightBackdCurrent-RightBackdPrev)/(now-before));
+        telemetry.addData(" "," ");
+
+        //moving
         robot.leftFrontMotor.setPower(leftFrontPower);
         robot.rightFrontMotor.setPower(rightFrontPower);
         robot.leftBackMotor.setPower(leftBackPower);
